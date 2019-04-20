@@ -10,11 +10,15 @@ class Heap {
 
   /**
    * Alias to {@code this.root}.
+   * @returns {Array}
    */
   get references() {
     return this.root;
   }
 
+  /**
+   * @param {number} ptr 
+   */
   addReference(ptr) {
     this.root.push(ptr);
   }
@@ -26,7 +30,8 @@ class Heap {
   /**
    * Finds a free fragment that fits an object with the given size, cut out extras if necessary, and mark the rest occupied.
    *
-   * @return {number} Start of a fragment that fits an object that is given size. If allocation failed, it will return {@code -1}.
+   * @param {number} size 
+   * @return {number} Start of a fragment that fits an object that is given size. If allocation failed, it will return {@constant -1}.
    */
   allocate(size) {
     let result = -1;

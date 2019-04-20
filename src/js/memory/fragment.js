@@ -1,22 +1,43 @@
 class Fragment {
+  /**
+   * @param {number} start 
+   * @param {number} size 
+   */
   constructor(start, size) {
     this.start = start;
     this.size = size;
     this.end = start + size;
   }
 
+  /**
+   * @param {Fragment} other 
+   * @returns {boolean}
+   */
   isBefore(other) {
     return this.start - 1 == other.end;
   }
 
+  /**
+   * @param {Fragment} other 
+   * @returns {boolean}
+   */
   isAfter(other) {
     return this.end + 1 == other.start;
   }
 
+  /**
+   * @param {Fragment} other 
+   * @returns {boolean}
+   */
   isNeighborWith(other) {
     return isBefore(other) || isAfter(other);
   }
 
+  /**
+   * @param {Fragment} other 
+   * @returns {Fragment} Always {@code this}.
+   * @throws {Error} When this fragment and the other fragment is not neighbors.
+   */
   merge(other) {
     if (isBefore(other)) {
       this.expandCapacity(other.size);
@@ -31,6 +52,10 @@ class Fragment {
     return this;
   }
 
+  /**
+   * @param {number} increase 
+   * @private
+   */
   expandCapacity(increase) {
     this.size = this.size + increase;
   }
