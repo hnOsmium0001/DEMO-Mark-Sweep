@@ -78,6 +78,14 @@ class Fragments {
     // TODO
   }
 
+  addRange(start, end) {
+    // TODO
+  }
+
+  clear() {
+    // TODO
+  }
+
   iterate(lambda) {
     // TODO
   }

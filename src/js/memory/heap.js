@@ -5,6 +5,8 @@ class Heap {
   constructor() {
     this.fragmentsFree = new Fragments();
     this.fragmentsOccupied = new Fragments();
+    this.gc = null;
+    this.objects = [];
     this.root = [];
   }
 
