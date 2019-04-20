@@ -1,10 +1,14 @@
-import { Fragment, Fragments } from 'fragment';
-import { Heap } from 'heap';
+import { Heap } from './heap';
 
 /**
  * A VirtualObject
  */
 class VirtualObject {
+  /**
+   * @param {number} size 
+   * @param {Array} ref 
+   * @param {Heap} heap 
+   */
   static create(size, ref, heap) {
     const start = heap.allocate(size);
     return new VirtualObject(start, size, ref);

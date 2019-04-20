@@ -1,5 +1,5 @@
-import { Fragment, Fragments } from 'fragment';
-import { Iteration } from 'iteration';
+import { Fragments } from './fragment';
+import { Iteration } from '../iteration';
 
 class Heap {
   constructor() {
