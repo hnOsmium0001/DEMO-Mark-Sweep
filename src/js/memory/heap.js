@@ -85,9 +85,10 @@ class Heap {
 
     let movingTarget = 0;
     this.fragmentsOccupied.iterate(fragment => {
-      if (fragment._begin != movingTarget) {
-        fragment._begin = movingTarget;
+      if (fragment.begin != movingTarget) {
+        fragment.begin = movingTarget;
       }
+      movingTarget = fragment.end;
     });
   }
 

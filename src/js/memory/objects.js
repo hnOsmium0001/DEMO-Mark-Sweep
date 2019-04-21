@@ -11,19 +11,22 @@ class VirtualObject {
    * @returns {VirtualObject}
    */
   static create(size, ref, heap) {
-    const start = heap.allocate(size);
-    return new VirtualObject(start, size, ref);
+    const ptr = heap.allocate(size);
+    if (ptr == -1) {
+      throw `Unable to allocate enough space for the given object: size=${size}`;
+    }
+    return new VirtualObject(ptr, size, ref);
   }
 
   /**
-   * @param {number} start 
+   * @param {number} ptr 
    * @param {number} size 
    * @param {Array} ref 
    */
-  constructor(start, size, ref) {
-    this.start = start;
+  constructor(ptr, size, ref) {
+    this.ptr = ptr;
     this.size = size;
-    this.end = start + size;
+    this.end = ptr + size;
     this.ref = ref;
   }
 }
