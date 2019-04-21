@@ -3,10 +3,10 @@ class Fragment {
    * @param {number} start 
    * @param {number} size 
    */
-  constructor(start, size) {
-    this.start = start;
-    this.size = size;
-    this.end = start + size;
+  constructor(begin, size) {
+    this._begin = begin;
+    this._size = size;
+    this._end = begin + size;
   }
 
   /**
@@ -14,7 +14,7 @@ class Fragment {
    * @returns {boolean}
    */
   isBefore(other) {
-    return this.start - 1 == other.end;
+    return this._begin - 1 == other._end;
   }
 
   /**
@@ -22,7 +22,7 @@ class Fragment {
    * @returns {boolean}
    */
   isAfter(other) {
-    return this.end + 1 == other.start;
+    return this._end + 1 == other._begin;
   }
 
   /**
@@ -30,7 +30,7 @@ class Fragment {
    * @returns {boolean}
    */
   isNeighborWith(other) {
-    return isBefore(other) || isAfter(other);
+    return this.isBefore(other) || this.isAfter(other);
   }
 
   /**
@@ -39,14 +39,14 @@ class Fragment {
    * @throws {Error} When this fragment and the other fragment is not neighbors.
    */
   merge(other) {
-    if (isBefore(other)) {
-      this.expandCapacity(other.size);
-      this.end = other.end;
-    } else if (isAfter(other)) {
-      this.expandCapacity(other.size);
-      this.start = other.start;
+    if (this.isBefore(_other)) {
+      this.expandCapacity(other._size);
+      this._end = other._end;
+    } else if (this.isAfter(other)) {
+      this.expandCapacity(other._size);
+      this._begin = other._begin;
     } else {
-      throw "Cannot merge two fragments that is not together";
+      throw 'Cannot merge two fragments that are not neighbors';
     }
     // If the two fragments are not neighbors, it will not reach this statement as 'throw' exits the function
     return this;
@@ -57,7 +57,52 @@ class Fragment {
    * @private
    */
   expandCapacity(increase) {
-    this.size = this.size + increase;
+    this.size += increase;
+  }
+
+  /**
+   * @returns {number}
+   */
+  get begin() {
+    return this._begin;
+  }
+
+  /**
+   * @param {number} begin
+   */
+  set begin(begin) {
+    this._begin = begin;
+    this._end = begin + this._size;
+  }
+
+  /**
+   * @returns {number}
+   */
+  get end() {
+    return this._end;
+  }
+
+  /**
+   * @param {number} end
+   */
+  set end(end) {
+    this._end = end;
+    this._size = end - this._start;
+  }
+
+  /**
+   * @returns {number}
+   */
+  get size() {
+    return this._size;
+  }
+
+  /**
+   * @param {number} size
+   */
+  set size(size) {
+    this._size = size;
+    this._end = this._begin + this._size;
   }
  }
 
@@ -87,6 +132,10 @@ class Fragments {
   }
 
   iterate(lambda) {
+    // TODO
+  }
+
+  getStartsAt(ptr) {
     // TODO
   }
 }
