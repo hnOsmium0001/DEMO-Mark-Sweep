@@ -2,17 +2,22 @@ import { Fragments } from './fragment';
 import { Iteration } from '../iteration';
 
 class Heap {
-  constructor() {
-    this.fragmentsFree = new Fragments();
-    this.fragmentsOccupied = new Fragments();
+  /**
+   * @param {number} size Number of words
+   */
+  constructor(size) {
+    this.size = size;
+    this.fragmentsFree = new Fragments(this);
+    this.fragmentsOccupied = new Fragments(this);
     this._gc = null;
     this.objects = [];
+    // References in an array
     this.root = [];
   }
 
   /**
    * Alias to {@code this.root}.
-   * @returns {Array}
+   * @returns {number[]}
    */
   get references() {
     return this.root;
@@ -38,13 +43,13 @@ class Heap {
   allocatePure(size) {
     let result = -1;
 
-    this.fragmentsFree.iterate(fragment => {
-      if (fragment._size >= size) {
-        const unused = fragment._size - size;
+    this.fragmentsFree.forEach(fragment => {
+      if (fragment.size >= size) {
+        const unused = fragment.size - size;
         this.fragmentsFree.remove(fragment);
-        this.fragmentsFree.addAt(fragment._begin + size, unused);
+        this.fragmentsFree.addAt(fragment.begin + size, unused);
 
-        result = fragment._begin;
+        result = fragment.begin;
         return Iteration.TERMINATE;
       }
       return Iteration.CONTINUE;
@@ -75,7 +80,7 @@ class Heap {
    * @param {number} ptr Start of a fragment, in {@code this.fragmentsFree}.
    */
   free(ptr) {
-    const fragment = this.fragmentsOccupied.getStartsAt(ptr);
+    const fragment = this.fragmentsOccupied.getBeginsAt(ptr);
     this.fragmentsOccupied.remove(fragment);
     this.fragmentsFree.add(fragment);
   }
@@ -84,12 +89,22 @@ class Heap {
     this.fragmentsFree.clear();
 
     let movingTarget = 0;
-    this.fragmentsOccupied.iterate(fragment => {
+    this.fragmentsOccupied.forEach(fragment => {
       if (fragment.begin != movingTarget) {
         fragment.begin = movingTarget;
       }
-      movingTarget = fragment.end;
+      movingTarget = fragment.end + 1;
+      return Iteration.CONTINUE;
     });
+
+    this.fragmentsFree.addRange(movingTarget, this.endIndex - movingTarget);
+  }
+
+  /**
+   * @returns {number}
+   */
+  get endIndex() {
+    return this.size - 1;
   }
 
   /**
@@ -100,7 +115,7 @@ class Heap {
   }
 
   /**
-   * @param {{ collect: any; }} gc
+   * @param {{ collect: function; }} gc
    */
   set gc(gc) {
     if (typeof gc.collect === 'function') {
