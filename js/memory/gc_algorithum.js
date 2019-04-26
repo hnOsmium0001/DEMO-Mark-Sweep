@@ -65,7 +65,7 @@ class ObjectGraphIterator {
    * @param {number[]} references 
    */
   iterateObjectGraph(references) {
-    for (ptr in references) {
+    for (const ptr of references) {
       if (!this.visited.contains(ptr)) {
         const object = this.objects[ptr];
         this.visited.add(ptr);
