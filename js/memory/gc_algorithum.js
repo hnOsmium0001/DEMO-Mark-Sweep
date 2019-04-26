@@ -17,7 +17,7 @@ class MarkSweep {
 
     this.heap.fragmentsFree.clear();
     this.heap.fragmentsOccupied.clear();
-    new ObjectGraphIterator(this.heap.fragmentsOccupied, this.heap.objects).iterateObjectGraph();
+    new ObjectGraphIterator(this.heap.fragmentsOccupied, this.heap.objects).iterateObjectGraph(this.heap.references);
 
     this.marked = true;
   }
@@ -27,14 +27,12 @@ class MarkSweep {
       return;
     }
 
-    // Shorter name (alias) for this.heap as it is used a lot of times
-    const heap = this.heap;
     // Head of the a potential free fragment, always moved to 'end + 1' of a occupied fragment
     // "potential" because there might be multiple consecitive occupied fragments
     let head = 0;
-    heap.fragmentsOccupied.forEach(fragment => {
-      if (head < fragment.start) {
-        heap.fragmentsFree.addRange(head, fragment.start - 1);
+    this.heap.fragmentsOccupied.forEach(fragment => {
+      if (head < fragment.begin) {
+        this.heap.fragmentsFree.addRange(head, fragment.begin - 1);
       }
       head = fragment.end + 1;
     });
@@ -71,8 +69,8 @@ class ObjectGraphIterator {
       if (!this.visited.contains(ptr)) {
         const object = this.objects[ptr];
         this.visited.add(ptr);
-        this.fragmentsOccupied.addAt(object.start, object.size);
-        iterateObjectGraph(object.ref);
+        this.fragmentsOccupied.addAt(object.ptr, object.size);
+        this.iterateObjectGraph(object.ref);
       }
     }
   }
