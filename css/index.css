@@ -1,14 +1,35 @@
-.memory-box {
-  border: 1px;
+.memory-display {
+  border-style: solid;
+  border-width: 1px;
   border-color: black;
-  width: 640px;
-  height: 640px;
   padding: 4px;
 }
 
 .word {
-  border: 1px;
+  border-style: solid;
+  border-width: 2px;
   border-color: black;
-  width: 64px;
-  height: 64px;
+
+  margin: 0px 4px 4px 0px;
+  float: left;
+}
+.word:hover {
+  border-color: yellow;
+}
+
+
+.occupied-unmarked {
+  background-color: red;
+}
+
+.occupied-marked-safe {
+  background-color: orange;
+}
+
+.occupied-marked-dead {
+  background-color: gray;
+}
+
+.free {
+  background-color: white;
 }

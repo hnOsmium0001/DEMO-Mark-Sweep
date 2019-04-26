@@ -1,7 +1,12 @@
 import { VirtualObject } from './memory/objects.js';
 import { Heap } from './memory/heap.js';
 import { MarkSweep } from './memory/gc_algorithum.js';
+import { MemoryDisplay } from './ui/memory_display.js';
 
+const memoryDisplay = new MemoryDisplay(64);
+memoryDisplay.init();
+
+/*
 const heap = new Heap(64);
 heap.gc = new MarkSweep(heap);
 
@@ -41,3 +46,4 @@ console.log("GC");
 console.log(heap.objects);
 console.log(heap.fragmentsOccupied.storage);
 console.log(heap.fragmentsFree.storage);
+*/
