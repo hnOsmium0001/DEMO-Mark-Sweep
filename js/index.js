@@ -3,8 +3,10 @@ import { Heap } from './memory/heap.js';
 import { MarkSweep } from './memory/gc_algorithum.js';
 import { MemoryDisplay } from './ui/memory_display.js';
 
-const memoryDisplay = new MemoryDisplay(64);
-memoryDisplay.init();
+$(document).ready(() => {
+  const memoryDisplay = new MemoryDisplay(64);
+  memoryDisplay.init();
+});
 
 /*
 const heap = new Heap(64);

@@ -32,7 +32,10 @@ class MemoryDisplay {
 
     // We don't really care about where this class go in the style sheet, and which style sheet it goes to
     // assuming we have a style sheet (which is the case)
-    document.styleSheets[0].addRule('.word-size', `width: ${unitSize}; height: ${unitSize};`, 1);
+    // Unfortunately vanilla jQuery doesn't support modifying CSS Stylesheets directly
+    document.styleSheets[0].addRule('.word-size', `width: ${unitSize}px; height: ${unitSize}px;`, 1);
+    // Alternate solution
+    // $('head').append(`<style> .word-size { width: ${unitSize}px; height: ${unitSize}px; } </style>`);
 
     // Total side length of a HTML tag, including margin, border, padding, and content
     const templateWord = $('<div class="word"></div>').toggleClass('word-size');
