@@ -114,25 +114,26 @@ class Fragment {
  * @returns {number}
  */
 function findIndex(fragments, predicate) {
-  const array = fragments.fragmentsStorage;
-
-  if (predicate.call(array, fragments.fragmentBefore0, array[0])) {
+  if (predicate(fragments.fragmentBefore0, fragments.firstFragment)) {
     // If the new fragment fits before the first stored fragment, put it at i=0
     return 0;
   }
 
+  // Access the storage array directly for performance, as this part is safe with any length of 'fragments.storage'
+  const array = fragments.storage;
+  const length = array.length - 1;
   // Don't iterate the last element
-  for (let i = 0; i < array.length - 1; ++i) {
+  for (let i = 0; i < length; ++i) {
     const current = array[i];
     // Since we will stop at 'length - 2' (second to last element), this is safe
     const next = array[i + 1];
-    if(predicate.call(array, current, next)) {
+    if(predicate(current, next)) {
       // If the new fragment fits between the 2 fragments, put it at the second fragment
       return i + 1;
     }
   }
 
-  if (predicate.call(array, array[array.length - 1], fragments.fragmentAfterEnd)) {
+  if (predicate(fragments.lastFragment, fragments.fragmentAfterEnd)) {
     // If the new fragment fits after all stored fragments, put it at end of the array (as 'array.push(fragment)')
     return array.length;
   }
@@ -146,7 +147,7 @@ const _fragmentBefore0 = new Fragment(-1, 0);
 // TODO use a better way to store fragments
 class Fragments {
   constructor(heap) {
-    this.fragmentsStorage = [];
+    this.storage = [];
     this.fragmentBefore0 = _fragmentBefore0;
     this.fragmentAfterEnd = new Fragment(heap.size, 0);
   }
@@ -156,10 +157,10 @@ class Fragments {
    * @returns {boolean}
    */
   remove(fragment) {
-    const targetIndex = this.fragmentsStorage.indexOf(fragment);
+    const targetIndex = this.storage.indexOf(fragment);
     if (targetIndex != -1) {
       // Delete the fragment at 'targetIndex'
-      this.fragmentsStorage.splice(targetIndex, 1);
+      this.storage.splice(targetIndex, 1);
       return true;
     }
     return false;
@@ -173,7 +174,7 @@ class Fragments {
   spliceFragmentAt(fragment, i) {
     if (i != -1) {
       // Insert 'fragment' into 'this.fragmentStorage' at 'insertion'
-      this.fragmentsStorage.splice(i, 0, fragment);
+      this.storage.splice(i, 0, fragment);
       return true;
     }
     return false;
@@ -210,14 +211,14 @@ class Fragments {
   }
 
   clear() {
-    this.fragmentsStorage = [];
+    this.storage = [];
   }
 
   /**
    * @param {(fragment: Fragment) => void} lambda 
    */
   forEach(lambda) {
-    for (const fragment of this.fragmentsStorage) {
+    for (const fragment of this.storage) {
       switch (lambda(fragment)) {
         case Iteration.CONTINUE: break;
         case Iteration.TERMINATE: return;
@@ -230,7 +231,37 @@ class Fragments {
    * @returns {Fragment, undefined} 'undefined' when no such fragment is found
    */
   getBeginsAt(ptr) {
-    return this.fragmentsStorage.find(fragment => fragment.begin == ptr);
+    return this.storage.find(fragment => fragment.begin == ptr);
+  }
+
+  /**
+   * @param {number} i
+   * @private
+   */
+  getInternal(i) {
+    if (i < 0) {
+      return this.fragmentBefore0;
+    }
+    if (i >= this.storage.length) {
+      return this.fragmentAfterEnd;
+    }
+    return this.storage[i];
+  }
+
+  /**
+   * @returns {Fragment}
+   */
+  get firstFragment() {
+    // First element, 'fragmentAfterEnd' when 'storage' is empty
+    return this.getInternal(0);
+  }
+
+  /**
+   * @returns {Fragment}
+   */
+  get lastFragment() {
+    // Last element, 'fragmentBefore0' when 'storage' is empty
+    return this.getInternal(this.storage.length - 1);
   }
 }
 
