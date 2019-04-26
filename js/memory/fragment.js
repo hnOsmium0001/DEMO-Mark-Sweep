@@ -199,7 +199,7 @@ class Fragments {
     if (size === 0) {
       return;
     }
-    return this.addRange(begin, begin + size - 1);
+    return this.addRangeInternal(begin, size, begin + size - 1);
   }
 
   /**
@@ -208,9 +208,20 @@ class Fragments {
    * @returns {boolean}
    */
   addRange(begin, end) {
+    return this.addRangeInternal(begin, end - begin + 1, end);
+  }
+
+  /**
+   * @param {number} begin 
+   * @param {number} size
+   * @param {number} end
+   * @returns {boolean}
+   * @private
+   */
+  addRangeInternal(begin, size, end) {
     const insertion = findIndex(this,
       (current, next) => current.end < begin && next.begin > end);
-    return this.insertFragmentAt(new Fragment(begin, end - begin + 1), insertion);
+    return this.insertFragmentAt(new Fragment(begin, size), insertion);
   }
 
   clear() {

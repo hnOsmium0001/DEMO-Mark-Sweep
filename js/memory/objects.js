@@ -31,7 +31,7 @@ class VirtualObject {
     this.ptr = ptr;
     this.begin = begin;
     this.size = size;
-    this.end = begin + size;
+    this.end = begin + size - 1;
     this.ref = ref;
   }
 }
