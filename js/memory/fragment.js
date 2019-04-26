@@ -146,6 +146,9 @@ const _fragmentBefore0 = new Fragment(-1, 0);
 
 // TODO use a better way to store fragments
 class Fragments {
+  /**
+  * @param {Heap} heap 
+  */
   constructor(heap) {
     this.storage = [];
     this.fragmentBefore0 = _fragmentBefore0;

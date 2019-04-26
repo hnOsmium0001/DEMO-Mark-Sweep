@@ -1,6 +1,52 @@
 import { Fragments, Fragment } from './fragment.js';
 import { Iteration } from '../iteration.js';
-import { VirtualObject } from './objects.js';
+
+/** Unit in unknown state, created when the unit is being removed. */
+const UNKNOWN = 0;
+/** Free unit */
+const FREE = 1;
+/** Occupied, unmarked unit. */
+const OCCUPIED = 2;
+/** Occupied, marked unit and is safe from sweep. */
+const OCCUPIED_SAFE = 3;
+/** Occupied, marked unit but need to be sweeped. */
+const OCCUPIED_DEAD = 4;
+
+class MarkingFragments extends Fragments {
+  /**
+   * @param {Heap} heap 
+   * @param {number} stateOnAdd 
+   */
+  constructor(heap, stateOnAdd) {
+    super(heap);
+    this.stateOnAdd = stateOnAdd;
+  }
+
+  remove(fragment) {
+    // Partial check
+    if (this.stateMap[fragment.begin] === this.stateOnAdd && this.stateMap[fragment.end] === this.stateOnAdd) { 
+      this.stateMap.fill(UNKNOWN, fragment.begin, fragment.end);
+      super.remove(fragment);
+    }
+  }
+
+  insertFragmentAt(fragment, i) {
+    // Partial check
+    if (this.stateMap[fragment.begin] === UNKNOWN && this.stateMap[fragment.end] === UNKNOWN) { 
+      this.stateMap.fill(this.stateOnAdd, fragment.begin, fragment.end);
+      super.insertFragmentAt(fragment);
+    }
+  }
+
+  clear() {
+    this.stateMap.map(state => state === this.stateOnAdd ? UNKNOWN : state);
+    super.clear();
+  }
+
+  get stateMap() {
+    return this.heap.stateMap;
+  }
+}
 
 class Heap {
   /**
@@ -8,8 +54,9 @@ class Heap {
    */
   constructor(size) {
     this.size = size;
-    this.fragmentsFree = new Fragments(this);
-    this.fragmentsOccupied = new Fragments(this);
+    this.fragmentsFree = new MarkingFragments(this, FREE);
+    this.fragmentsOccupied = new MarkingFragments(this, OCCUPIED);
+    this.stateMap = [];
     this._gc = null;
     this.objects = [];
     // References to objects in 'this.objects'
@@ -128,4 +175,4 @@ class Heap {
   }
 }
 
-export { Heap };
+export { UNKNOWN, FREE, OCCUPIED, OCCUPIED_SAFE, OCCUPIED_DEAD, MarkingFragments, Heap };
