@@ -69,7 +69,7 @@ class ObjectGraphIterator {
       if (!this.visited.has(ptr)) {
         const object = this.objects[ptr];
         this.visited.add(ptr);
-        this.fragmentsOccupied.addAt(object.ptr, object.size);
+        this.fragmentsOccupied.addAt(object.begin, object.size);
         this.iterateObjectGraph(object.ref);
       }
     }
