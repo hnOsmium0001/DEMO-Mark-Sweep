@@ -59,7 +59,7 @@ class Fragment {
    * @private
    */
   expandCapacity(increase) {
-    this.size += increase;
+    this._size += increase;
   }
 
   /**
@@ -170,10 +170,23 @@ class Fragments {
    * @param {Fragment} fragment 
    * @param {number} i 
    * @returns {boolean}
+   * @private
    */
   insertFragmentAt(fragment, i) {
     if (i != -1) {
-      // Insert 'fragment' into 'this.fragmentStorage' at 'insertion'
+      const previous = this.getInternal(i - 1);
+      if (fragment.isAfter(previous)) {
+        previous.merge(fragment);
+        return true;
+      }
+
+      const following = this.getInternal(i + 1);
+      if (fragment.isBefore(following)) {
+        following.merge(fragment);
+        return true;
+      }
+
+      // Insert 'fragment' into 'this.fragmentStorage' at 'i'
       this.storage.splice(i, 0, fragment);
       return true;
     }

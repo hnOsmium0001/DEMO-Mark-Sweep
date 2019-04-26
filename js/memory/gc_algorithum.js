@@ -3,6 +3,7 @@ import { VirtualObject } from './objects.js';
 import { Heap } from './heap.js';
 import { Iteration } from '../iteration.js';
 
+
 class MarkSweep {
   /**
    * @param {Heap} heap 
@@ -37,6 +38,11 @@ class MarkSweep {
       }
       head = fragment.end + 1;
     });
+
+    // Do this one more time for the last fragment, as there might be a fragment after all other occupied ones
+    if (head < this.heap.fragmentsOccupied.lastFragment.begin) {
+      this.heap.fragmentsFree.addRange(head, fragment.begin - 1);
+    }
 
     this.marked = false;
   }
