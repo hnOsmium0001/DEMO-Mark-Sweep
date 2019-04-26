@@ -1,6 +1,7 @@
 import { Fragments } from './fragment.js';
 import { VirtualObject } from './objects.js';
 import { Heap } from './heap.js';
+import { Iteration } from '../iteration.js';
 
 class MarkSweep {
   /**
@@ -43,12 +44,15 @@ class MarkSweep {
   updateObjectContainer() {
     for (let i = 0; i < this.heap.objects.length; ++i) {
       const object = this.heap.objects[i];
+      
       let matched = false;
-      for (const fragment of this.heap.fragmentsOccupied) {
+      this.heap.fragmentsOccupied.forEach(fragment => {
         if (object.begin == fragment.begin && object.size == fragment.size) {
           matched = true;
+          return Iteration.TERMINATE;
         }
-      }
+        return Iteration.CONTINUE;
+      });
 
       if (!matched) {
         this.heap.objects[i] = undefined;
