@@ -207,7 +207,7 @@ class Fragments {
   addRange(begin, end) {
     const insertion = findIndex(this,
       (current, next) => current.end < begin && next.begin > end);
-    return spliceFragmentAt(new Fragment(begin, end - begin), insertion);
+    return this.spliceFragmentAt(new Fragment(begin, end - begin), insertion);
   }
 
   clear() {
