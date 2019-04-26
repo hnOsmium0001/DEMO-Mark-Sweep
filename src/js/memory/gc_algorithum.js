@@ -1,6 +1,6 @@
-import { Fragments } from './fragment';
-import { VirtualObject } from './objects';
-import { Heap } from './heap';
+import { Fragments } from './fragment.js';
+import { VirtualObject } from './objects.js';
+import { Heap } from './heap.js';
 
 class MarkSweep {
   /**

@@ -1,6 +1,6 @@
-import { VirtualObject } from './memory/objects';
-import { Heap } from './memory/heap';
-import { MarkSweep } from './memory/gc_algorithum';
+import { VirtualObject } from './memory/objects.js';
+import { Heap } from './memory/heap.js';
+import { MarkSweep } from './memory/gc_algorithum.js';
 
 const heap = new Heap(64);
 heap.gc = new MarkSweep(heap);

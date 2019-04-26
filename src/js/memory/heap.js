@@ -1,5 +1,5 @@
-import { Fragments } from './fragment';
-import { Iteration } from '../iteration';
+import { Fragments } from './fragment.js';
+import { Iteration } from '../iteration.js';
 
 class Heap {
   /**
