@@ -71,7 +71,7 @@ class Heap {
    */
   allocate(size) {
     const result = this.allocatePure(size);
-    if (result == -1) {
+    if (result === -1) {
       this.sortFragments();
       return this.allocatePure(size);
     }

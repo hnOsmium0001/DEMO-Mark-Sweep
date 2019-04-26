@@ -47,7 +47,7 @@ class MarkSweep {
 
       let matched = false;
       this.heap.fragmentsOccupied.forEach(fragment => {
-        if (object.begin == fragment.begin && object.size == fragment.size) {
+        if (object.begin === fragment.begin && object.size === fragment.size) {
           matched = true;
           return Iteration.TERMINATE;
         }
@@ -59,8 +59,7 @@ class MarkSweep {
       }
     }
 
-    // Remove all elements whose value is 'false'
-    this.heap.objects.filter(Boolean);
+    this.heap.objects.filter(element => element !== undefined);
   }
 
   collect() {

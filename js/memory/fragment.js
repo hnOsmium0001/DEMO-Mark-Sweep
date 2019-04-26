@@ -211,7 +211,7 @@ class Fragments {
   }
 
   clear() {
-    this.storage = [];
+    this.storage.length = 0;
   }
 
   /**
