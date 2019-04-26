@@ -1,0 +1,14 @@
+.memory-box {
+  border: 1px;
+  border-color: black;
+  width: 640px;
+  height: 640px;
+  padding: 4px;
+}
+
+.word {
+  border: 1px;
+  border-color: black;
+  width: 64px;
+  height: 64px;
+}
