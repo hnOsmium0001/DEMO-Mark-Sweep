@@ -12,19 +12,19 @@ class MarkSweep {
 
   mark() {
     if (this.marked) {
-      return;
+      throw `The heap ${this.heap} is already marked`;
     }
 
     this.heap.fragmentsFree.clear();
     this.heap.fragmentsOccupied.clear();
-    new ObjectGraphIterator(this.heap.fragmentsOccupied, this.heap.objects).iterateObjectGraph(this.heap.references);
+    new ObjectGraphIterator(this.heap.fragmentsOccupied).iterateObjectGraph(this.heap.references);
 
     this.marked = true;
   }
 
   sweep() {
     if (!this.marked) {
-      return;
+      throw `The heap ${this.heap} is not marked yet`;
     }
 
     // Head of the a potential free fragment, always moved to 'end + 1' of a occupied fragment
@@ -52,23 +52,20 @@ class MarkSweep {
  */
 class ObjectGraphIterator {
   /**
-   * @param {VirtualObject[]} objects 
    * @param {Fragments} fragmentsOccupied 
    */
-  constructor(objects, fragmentsOccupied) {
-    this.objects = objects;
+  constructor(fragmentsOccupied) {
     this.fragmentsOccupied = fragmentsOccupied;
     this.visited = new Set();
   }
 
   /**
-   * @param {number[]} references 
+   * @param {VirtualObject[]} references 
    */
   iterateObjectGraph(references) {
-    for (const ptr of references) {
-      if (!this.visited.has(ptr)) {
-        const object = this.objects[ptr];
-        this.visited.add(ptr);
+    for (const object of references) {
+      if (!this.visited.has(object)) {
+        this.visited.add(object);
         this.fragmentsOccupied.addAt(object.begin, object.size);
         this.iterateObjectGraph(object.ref);
       }

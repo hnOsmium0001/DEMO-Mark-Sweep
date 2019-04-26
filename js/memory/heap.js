@@ -1,4 +1,4 @@
-import { Fragments } from './fragment.js';
+import { Fragments, Fragment } from './fragment.js';
 import { Iteration } from '../iteration.js';
 
 class Heap {
@@ -11,13 +11,13 @@ class Heap {
     this.fragmentsOccupied = new Fragments(this);
     this._gc = null;
     this.objects = [];
-    // References in an array
+    // References to objects in 'this.objects'
     this.root = [];
   }
 
   /**
    * Alias to {@code this.root}.
-   * @returns {number[]}
+   * @returns {Fragment[]}
    */
   get references() {
     return this.root;

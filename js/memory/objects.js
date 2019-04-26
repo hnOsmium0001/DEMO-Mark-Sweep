@@ -11,19 +11,24 @@ class VirtualObject {
    * @returns {VirtualObject}
    */
   static create(size, ref, heap) {
-    const ptr = heap.allocate(size);
-    if (ptr == -1) {
+    const allocedBegin = heap.allocate(size);
+    if (allocedBegin == -1) {
       throw `Unable to allocate enough space for the given object: size=${size}`;
     }
-    return new VirtualObject(ptr, size, ref);
+
+    const object = new VirtualObject(heap.objects.length, allocedBegin, size, ref);
+    heap.objects.push(object)
+    return object;
   }
 
   /**
+   * @param {number} ptr Index in 'heap.objects', -1 if it is not in a heap yet
    * @param {number} begin Beginning word of this object
    * @param {number} size Size in words of this object
-   * @param {Array} ref References stored (pointing to them)
+   * @param {VirtualObject[]} ref References stored (pointing to them)
    */
-  constructor(begin, size, ref) {
+  constructor(ptr, begin, size, ref) {
+    this.ptr = ptr;
     this.begin = begin;
     this.size = size;
     this.end = begin + size;
