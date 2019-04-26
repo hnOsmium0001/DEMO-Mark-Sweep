@@ -128,16 +128,4 @@ class Heap {
   }
 }
 
-class FragmentOccupied extends Fragment {
-  /**
-   * @param {number} begin 
-   * @param {number} size 
-   * @param {VirtualObject} object
-   */
-  constructor(begin, size, object) {
-    super(begin, size);
-    this.object = object;
-  }
-}
-
-export { Heap, FragmentOccupied };
+export { Heap };

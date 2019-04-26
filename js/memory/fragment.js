@@ -196,7 +196,10 @@ class Fragments {
    * @returns {boolean}
    */
   addAt(begin, size) {
-    return this.addRange(begin, begin + size);
+    if (size === 0) {
+      return;
+    }
+    return this.addRange(begin, begin + size - 1);
   }
 
   /**
@@ -207,7 +210,7 @@ class Fragments {
   addRange(begin, end) {
     const insertion = findIndex(this,
       (current, next) => current.end < begin && next.begin > end);
-    return this.spliceFragmentAt(new Fragment(begin, end - begin), insertion);
+    return this.spliceFragmentAt(new Fragment(begin, end - begin + 1), insertion);
   }
 
   clear() {

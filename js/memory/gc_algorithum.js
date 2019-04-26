@@ -59,7 +59,7 @@ class MarkSweep {
       }
     }
 
-    this.heap.objects.filter(element => element !== undefined);
+    this.heap.objects.filter(e => e !== undefined);
   }
 
   collect() {
