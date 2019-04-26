@@ -1,17 +1,20 @@
 .memory-display {
-  border-style: solid;
-  border-width: 1px;
-  border-color: black;
-  padding: 4px;
-}
+  display: inline-block;
 
-.word {
   border-style: solid;
   border-width: 2px;
   border-color: black;
+  padding: 4px 0px 0px 4px;
+}
+
+.word {
+  float: left;
+  box-sizing: border-box;
 
   margin: 0px 4px 4px 0px;
-  float: left;
+  border-style: solid;
+  border-width: 2px;
+  border-color: black;  
 }
 .word:hover {
   border-color: yellow;

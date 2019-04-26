@@ -1,10 +1,6 @@
 import { Heap } from "../memory/heap.js";
 import { MarkSweep } from "../memory/gc_algorithum.js";
 
-// const MAX_DISPLAY_SIZE = 640;
-// const DISPLAY_PADDING = 4;
-// const DISPLAY_BORDER = 1;
-
 const BASE_UNIT_SIZE = 64;
 const SIZE_SHRINK_PERIOD = 8;
 
@@ -34,15 +30,10 @@ class MemoryDisplay {
     // assuming we have a style sheet (which is the case)
     // Unfortunately vanilla jQuery doesn't support modifying CSS Stylesheets directly
     document.styleSheets[0].addRule('.word-size', `width: ${unitSize}px; height: ${unitSize}px;`, 1);
-    // Alternate solution
-    // $('head').append(`<style> .word-size { width: ${unitSize}px; height: ${unitSize}px; } </style>`);
-
-    // Total side length of a HTML tag, including margin, border, padding, and content
-    const templateWord = $('<div class="word"></div>').toggleClass('word-size');
 
     const display = $('#memory-display');
     for (let i = 0; i < this.heap.size; ++i) {
-      display.append(templateWord);
+      display.append($('<div class="word"></div>').toggleClass('word-size'));
     }
   }
 }
