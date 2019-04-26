@@ -8,8 +8,8 @@ heap.gc = new MarkSweep(heap);
 const obj_o1_1 = VirtualObject.create(2, [], heap); // 0
 const obj_o1 = VirtualObject.create(3, [obj_o1_1], heap); // 1
 
-const obj_o2_1 = VirtualObject.create(2, [obj_o2_2], heap); // 2
-const obj_o2_2 = VirtualObject.create(2, [], heap); // 3
+const obj_o2_1 = VirtualObject.create(2, [], heap); // 2
+const obj_o2_2 = VirtualObject.create(2, [obj_o2_2], heap); // 3
 const obj_o2 = VirtualObject.create(6, [obj_o2_1, obj_o2_2], heap); // 4
 
 const obj_o3 = VirtualObject.create(1, [obj, obj2], heap); // 5
