@@ -9,5 +9,5 @@ const obj = VirtualObject.create(2, [], heap);
 heap.addReference(obj);
 
 console.log(heap.references);
-console.log(heap.fragmentsOccupied.fragmentsStorage);
-console.log(heap.fragmentsFree.fragmentsStorage);
+console.log(heap.fragmentsOccupied.storage);
+console.log(heap.fragmentsFree.storage);

@@ -19,9 +19,9 @@ class VirtualObject {
   }
 
   /**
-   * @param {number} ptr 
-   * @param {number} size 
-   * @param {Array} ref 
+   * @param {number} ptr Begin word of this object
+   * @param {number} size Size in words of this object
+   * @param {Array} ref References stored (pointing to them)
    */
   constructor(ptr, size, ref) {
     this.ptr = ptr;
