@@ -16,8 +16,8 @@ const obj_o3 = VirtualObject.create(1, [6, 7], heap); // 5
 
 const obj = VirtualObject.create(2, [1, 2, 5], heap); // 6
 const obj2 = VirtualObject.create(4, [1, 6], heap); // 7
-heap.addReference(obj);
-heap.addReference(obj2);
+heap.addReference(6);
+heap.addReference(7);
 
 const randomObj1 = VirtualObject.create(2, [9], heap); // 8
 const randomObj2 = VirtualObject.create(8, [8, 1, 6], heap) // 9
