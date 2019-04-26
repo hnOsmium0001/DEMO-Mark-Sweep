@@ -47,7 +47,7 @@ class Heap {
       if (fragment.size >= size) {
         const unused = fragment.size - size;
         this.fragmentsFree.remove(fragment);
-        this.fragmentsOccupied.add(fragment);
+        this.fragmentsOccupied.addAt(fragment.begin, size);
         this.fragmentsFree.addAt(fragment.begin + size, unused);
 
         result = fragment.begin;
