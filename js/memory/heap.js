@@ -1,5 +1,6 @@
 import { Fragments, Fragment } from './fragment.js';
 import { Iteration } from '../iteration.js';
+import { VirtualObject } from './objects.js';
 
 class Heap {
   /**
@@ -127,4 +128,16 @@ class Heap {
   }
 }
 
-export { Heap };
+class FragmentOccupied extends Fragment {
+  /**
+   * @param {number} begin 
+   * @param {number} size 
+   * @param {VirtualObject} object
+   */
+  constructor(begin, size, object) {
+    super(begin, size);
+    this.object = object;
+  }
+}
+
+export { Heap, FragmentOccupied };

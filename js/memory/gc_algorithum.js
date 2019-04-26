@@ -40,9 +40,29 @@ class MarkSweep {
     this.marked = false;
   }
 
+  updateObjectContainer() {
+    for (let i = 0; i < this.heap.objects.length; ++i) {
+      const object = this.heap.objects[i];
+      let matched = false;
+      for (const fragment of this.heap.fragmentsOccupied) {
+        if (object.begin == fragment.begin && object.size == fragment.size) {
+          matched = true;
+        }
+      }
+
+      if (!matched) {
+        this.heap.objects[i] = undefined;
+      }
+    }
+
+    // Remove all elements whose value is 'false'
+    this.heap.filter(Boolean);
+  }
+
   collect() {
     this.mark();
     this.sweep();
+    this.updateObjectContainer();
   }
 }
 
