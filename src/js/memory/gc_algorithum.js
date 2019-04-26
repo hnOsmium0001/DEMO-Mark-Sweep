@@ -41,6 +41,11 @@ class MarkSweep {
 
     this.marked = false;
   }
+
+  collect() {
+    this.mark();
+    this.sweep();
+  }
 }
 
 /**
