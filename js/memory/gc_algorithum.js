@@ -32,7 +32,7 @@ class MarkSweep {
     // Head of the a potential free fragment, always moved to 'end + 1' of a occupied fragment
     // "potential" because there might be multiple consecitive occupied fragments
     let head = 0;
-    heap.fragmentsOccupied.iterate(fragment => {
+    heap.fragmentsOccupied.forEach(fragment => {
       if (head < fragment.start) {
         heap.fragmentsFree.addRange(head, fragment.start - 1);
       }
