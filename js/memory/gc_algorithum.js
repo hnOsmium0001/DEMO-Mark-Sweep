@@ -44,7 +44,7 @@ class MarkSweep {
   updateObjectContainer() {
     for (let i = 0; i < this.heap.objects.length; ++i) {
       const object = this.heap.objects[i];
-      
+
       let matched = false;
       this.heap.fragmentsOccupied.forEach(fragment => {
         if (object.begin == fragment.begin && object.size == fragment.size) {
@@ -60,7 +60,7 @@ class MarkSweep {
     }
 
     // Remove all elements whose value is 'false'
-    this.heap.filter(Boolean);
+    this.heap.objects.filter(Boolean);
   }
 
   collect() {
