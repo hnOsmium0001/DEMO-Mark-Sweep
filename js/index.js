@@ -24,13 +24,14 @@ const randomObj2 = VirtualObject.create(8, [8, 1, 6], heap) // 9
 
 const selfObj = VirtualObject.create(1, [10], heap) // 10
 
-console.log("objects: " + heap.objects);
-console.log("occupied: " + heap.fragmentsOccupied.storage);
-console.log("free: " + heap.fragmentsFree.storage);
+console.log("Order: objects, occupied, free")
+console.log(heap.objects);
+console.log(heap.fragmentsOccupied.storage);
+console.log(heap.fragmentsFree.storage);
 
 heap.gc.collect();
 console.log("GC");
 
-console.log("objects: " + heap.objects);
-console.log("occupied: " + heap.fragmentsOccupied.storage);
-console.log("free: " + heap.fragmentsFree.storage);
+console.log(heap.objects);
+console.log(heap.fragmentsOccupied.storage);
+console.log(heap.fragmentsFree.storage);
