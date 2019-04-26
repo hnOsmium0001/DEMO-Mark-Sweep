@@ -8,7 +8,7 @@ class Fragment {
   constructor(begin, size) {
     this._begin = begin;
     this._size = size;
-    this._end = begin + size;
+    this._end = begin + size - 1;
   }
 
   /**
@@ -89,7 +89,7 @@ class Fragment {
    */
   set end(end) {
     this._end = end;
-    this._size = end - this._begin;
+    this._size = end - this._begin + 1;
   }
 
   /**
@@ -104,7 +104,7 @@ class Fragment {
    */
   set size(size) {
     this._size = size;
-    this._end = this._begin + this._size;
+    this._end = this._begin + this._size - 1;
   }
 }
 
@@ -171,7 +171,7 @@ class Fragments {
    * @param {number} i 
    * @returns {boolean}
    */
-  spliceFragmentAt(fragment, i) {
+  insertFragmentAt(fragment, i) {
     if (i != -1) {
       // Insert 'fragment' into 'this.fragmentStorage' at 'insertion'
       this.storage.splice(i, 0, fragment);
@@ -187,7 +187,7 @@ class Fragments {
   add(fragment) {
     const insertion = findIndex(this,
       (current, next) => current.end < fragment.begin && next.begin > fragment.end);
-    return this.spliceFragmentAt(fragment, insertion);
+    return this.insertFragmentAt(fragment, insertion);
   }
 
   /**
@@ -210,7 +210,7 @@ class Fragments {
   addRange(begin, end) {
     const insertion = findIndex(this,
       (current, next) => current.end < begin && next.begin > end);
-    return this.spliceFragmentAt(new Fragment(begin, end - begin + 1), insertion);
+    return this.insertFragmentAt(new Fragment(begin, end - begin + 1), insertion);
   }
 
   clear() {
