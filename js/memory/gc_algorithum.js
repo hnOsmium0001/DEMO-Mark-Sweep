@@ -1,5 +1,5 @@
 import { VirtualObject } from './objects.js';
-import { Heap, MarkingFragments, OCCUPIED_SAFE, UNKNOWN, OCCUPIED_DEAD } from './heap.js';
+import { Heap, MarkingFragments, UNKNOWN, OCCUPIED_SAFE, OCCUPIED_DEAD } from './heap.js';
 import { Iteration } from '../iteration.js';
 
 

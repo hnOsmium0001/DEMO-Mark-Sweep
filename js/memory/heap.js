@@ -43,6 +43,11 @@ class MarkingFragments extends Fragments {
     super.clear();
   }
 
+  /**
+   * Get the stateMap property from the heap object bond.
+   * @returns {number[]}
+   * @private
+   */
   get stateMap() {
     return this.heap.stateMap;
   }
