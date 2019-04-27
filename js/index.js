@@ -1,17 +1,13 @@
 import { VirtualObject } from './memory/objects.js';
 import { MemoryDisplay } from './ui/memory_display.js';
+import { Heap } from './memory/heap.js';
 
 $(document).ready(() => {
   const memoryDisplay = new MemoryDisplay(64);
-  const heap = memoryDisplay.heap;
   memoryDisplay.init();
 
   function regenObjects() {
-    heap.clearReferences();
-    heap.objects.length = 0;
-    heap.fragmentsFree.storage.length = 0;
-    heap.fragmentsOccupied.storage.length = 0;
-    heap.fragmentsFree.addRange(0, heap.endIndex);
+    const heap = memoryDisplay.heap = new Heap(64);
 
     const obj_o1_1 = VirtualObject.create(2, [], heap); // 0
     const obj_o1 = VirtualObject.create(3, [obj_o1_1], heap); // 1
