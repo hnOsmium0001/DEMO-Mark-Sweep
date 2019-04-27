@@ -18,7 +18,8 @@ class MarkingFragments extends Fragments {
    * @param {number} stateOnAdd 
    */
   constructor(heap, stateOnAdd) {
-    super(heap);
+    super(heap.size);
+    this.heap = heap;
     this.stateOnAdd = stateOnAdd;
   }
 

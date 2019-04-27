@@ -147,12 +147,12 @@ const _fragmentBefore0 = new Fragment(-1, 0);
 // TODO use a better way to store fragments
 class Fragments {
   /**
-  * @param {Heap} heap 
+  * @param {number} size Number of words, should be the same as the heap it belongs to if it has one.
   */
-  constructor(heap) {
+  constructor(size) {
     this.storage = [];
     this.fragmentBefore0 = _fragmentBefore0;
-    this.fragmentAfterEnd = new Fragment(heap.size, 0);
+    this.fragmentAfterEnd = new Fragment(size, 0);
   }
 
   /**
