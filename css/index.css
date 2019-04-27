@@ -1,8 +1,10 @@
 .container {
+  /* Empty element. Used for overlay the canvas on top of the display .*/
   position: relative;
 }
 
 .memory-display {
+  /* Inline-block will try to fit to its contents. */
   display: inline-block;
 
   border-style: solid;
@@ -15,9 +17,13 @@
   display: block;
   width: 100%;
   height: 100%;
+
   position: absolute;
   top: 0px;
   left: 0px;
+
+  /* Let hover event pass through the overlay, so that one can select units under it */
+  pointer-events: none;
 }
 
 .word {

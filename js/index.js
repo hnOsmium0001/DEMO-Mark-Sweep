@@ -11,6 +11,7 @@ $(document).ready(() => {
     heap.objects.length = 0;
     heap.fragmentsFree.storage.length = 0;
     heap.fragmentsOccupied.storage.length = 0;
+    heap.fragmentsFree.addRange(0, heap.endIndex);
 
     const obj_o1_1 = VirtualObject.create(2, [], heap); // 0
     const obj_o1 = VirtualObject.create(3, [obj_o1_1], heap); // 1
