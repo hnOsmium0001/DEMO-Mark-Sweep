@@ -61,6 +61,7 @@ class Heap {
   constructor(size) {
     this.size = size;
     this.fragmentsFree = new MarkingFragments(this, FREE);
+    this.fragmentsFree.addRange(0, this.endIndex);
     this.fragmentsOccupied = new MarkingFragments(this, OCCUPIED);
     this.stateMap = [];
     this._gc = null;

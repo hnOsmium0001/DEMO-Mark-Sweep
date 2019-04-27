@@ -38,9 +38,11 @@ $(document).ready(() => {
   console.log("Order: objects, occupied, free");
 
   $('#print-state-map').click(() => {
+    const heap = memoryDisplay.heap;
     console.log(heap.stateMap);
   });
   $('#regen').click(() => {
+    const heap = memoryDisplay.heap;
     regenObjects();
 
     console.log(heap.objects);
