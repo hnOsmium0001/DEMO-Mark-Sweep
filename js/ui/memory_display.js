@@ -26,14 +26,16 @@ class MemoryDisplay {
     const shrinkFactor = 1 / Math.ceil(sideLength / SIZE_SHRINK_PERIOD);
     const unitSize = BASE_UNIT_SIZE * shrinkFactor;
 
-    // We don't really care about where this class go in the style sheet, and which style sheet it goes to
+    // We don't really care about where this class go in the style sheet, and which style sheet it goes to,
     // assuming we have a style sheet (which is the case)
     // Unfortunately vanilla jQuery doesn't support modifying CSS Stylesheets directly
-    document.styleSheets[0].addRule('.word-size', `width: ${unitSize}px; height: ${unitSize}px;`, 1);
+    document.styleSheets[0].addRule('.word-sizing', `width: ${unitSize}px; height: ${unitSize}px;`, 1);
 
     const display = $('#memory-display');
     for (let i = 0; i < this.heap.size; ++i) {
-      display.append($('<div class="word"></div>').toggleClass('word-size'));
+      display.append($(`<div id="word-${i}" class="word"></div>`)
+        .toggleClass('word-sizing')
+        .prop('data-word-index', i));
     }
   }
 }

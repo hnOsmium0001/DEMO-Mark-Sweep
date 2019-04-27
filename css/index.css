@@ -25,33 +25,3 @@
   /* Let hover event pass through the overlay, so that one can select units under it */
   pointer-events: none;
 }
-
-.word {
-  float: left;
-  box-sizing: border-box;
-
-  margin: 0px 4px 4px 0px;
-  border-style: solid;
-  border-width: 2px;
-  border-color: black;  
-}
-.word:hover {
-  border-color: yellow;
-}
-
-
-.occupied-unmarked {
-  background-color: red;
-}
-
-.occupied-marked-safe {
-  background-color: orange;
-}
-
-.occupied-marked-dead {
-  background-color: gray;
-}
-
-.free {
-  background-color: white;
-}

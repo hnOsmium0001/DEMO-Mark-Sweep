@@ -7,7 +7,8 @@ $(document).ready(() => {
   memoryDisplay.init();
 
   function regenObjects() {
-    const heap = memoryDisplay.heap = new Heap(64);
+    // const heap = memoryDisplay.heap = new Heap(64);
+    const heap = memoryDisplay.heap;
 
     const obj_o1_1 = VirtualObject.create(2, [], heap); // 0
     const obj_o1 = VirtualObject.create(3, [obj_o1_1], heap); // 1
@@ -36,6 +37,7 @@ $(document).ready(() => {
   }
 
   console.log("Order: objects, occupied, free");
+  regenObjects();
 
   $('#print-state-map').click(() => {
     const heap = memoryDisplay.heap;
@@ -43,7 +45,7 @@ $(document).ready(() => {
   });
   $('#regen').click(() => {
     const heap = memoryDisplay.heap;
-    regenObjects();
+    // regenObjects();
 
     console.log(heap.objects);
     console.log(heap.fragmentsOccupied.storage);
