@@ -56,7 +56,9 @@ class ObservableArray {
   }
 
   map(callback) {
-    return this.handle.map(callback);
+    const observableArray = new ObservableArray(this.handle.length);
+    observableArray.handle = this.handle.map(callback)
+    return observableArray;
   }
 
   /**
