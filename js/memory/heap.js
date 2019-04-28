@@ -8,7 +8,7 @@ const FREE = 1;
 /** Occupied, unmarked unit. */
 const OCCUPIED = 2;
 /** Occupied, marked unit and is safe from sweep. */
-const OCCUPIED_SAFE = 3;
+const OCCUPIED_LIVE = 3;
 /** Occupied, marked unit but need to be sweeped. */
 const OCCUPIED_DEAD = 4;
 
@@ -33,8 +33,13 @@ class MarkingFragments extends Fragments {
     super.insertFragmentAt(fragment, i);
   }
 
-  clear() {
-    this.heap.stateMap = this.heap.stateMap.map(state => state === this.stateOnAdd ? UNKNOWN : state);
+  /**
+   * @param {boolean} [wipeStateMap = true] 
+   */
+  clear(wipeStateMap = true) {
+    if (wipeStateMap) {
+      this.heap.stateMap = this.heap.stateMap.map(state => state === this.stateOnAdd ? UNKNOWN : state);
+    }
     super.clear();
   }
 }
@@ -169,4 +174,4 @@ class Heap {
   }
 }
 
-export { UNKNOWN, FREE, OCCUPIED, OCCUPIED_SAFE, OCCUPIED_DEAD, MarkingFragments, Heap };
+export { UNKNOWN, FREE, OCCUPIED, OCCUPIED_LIVE, OCCUPIED_DEAD, MarkingFragments, Heap };

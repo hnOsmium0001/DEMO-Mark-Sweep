@@ -1,7 +1,6 @@
 import { VirtualObject } from './objects.js';
-import { Heap, MarkingFragments, UNKNOWN, OCCUPIED, OCCUPIED_SAFE, OCCUPIED_DEAD } from './heap.js';
+import { Heap, MarkingFragments, OCCUPIED, OCCUPIED_LIVE, OCCUPIED_DEAD } from './heap.js';
 import { Iteration } from '../iteration.js';
-
 
 class MarkSweep {
   /**
@@ -17,19 +16,17 @@ class MarkSweep {
       throw `The heap ${this.heap} is already marked`;
     }
 
-    this.heap.fragmentsFree.clear();
-    this.heap.fragmentsOccupied.clear();
+    // Clear fragment storage but don't wipe out the stateMap
+    // Keep the stateMap, and after marking the live objects, all the OCCUPIED left are OCCUPIED_DEAD
+    this.heap.fragmentsFree.clear(false);
+    this.heap.fragmentsOccupied.clear(false);
 
-    // Extra Idoit-Proof checks, should never happen
-    if (this.heap.stateMap.includes(UNKNOWN)) {
-      throw "Existing unknown states in the state map";
-    }
     // Let 'fragmentsOccupied' mark added fragments their state safe, as they are reachable
-    this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED_SAFE;
+    this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED_LIVE;
     // Reachability test to all objects
     new ObjectGraphIterator(this.heap.fragmentsOccupied).iterateObjectGraph(this.heap.references);
-    // Since all occupied states become UNKNOWN on 'clear', and reachable ones will be marked as OCCUPIED_SAFE, the rest will be OCCUPIED_DEAD
-    this.heap.stateMap = this.heap.stateMap.map(state => state === UNKNOWN ? OCCUPIED_DEAD : state);
+    // Since all occupied states are untouched during marking, and the reachable ones are marked as OCCUPIED_LIVE, they are deade (unreachable)
+    this.heap.stateMap = this.heap.stateMap.map(state => state === OCCUPIED ? OCCUPIED_DEAD : state);
     // Let 'fragmentsOccupied' mark added fragments their state regular occupied as before
     this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED;
 
@@ -53,13 +50,12 @@ class MarkSweep {
     });
 
     // Do this one more time for the last fragment, as there might be a fragment after all other occupied ones
-    if (head < this.heap.fragmentsOccupied.lastFragment.begin) {
-      this.heap.fragmentsFree.addRange(head, fragment.begin - 1);
+    if (head < this.heap.fragmentsOccupied.fragmentAfterEnd.begin) {
+      this.heap.fragmentsFree.addRange(head, this.heap.stateMap.length - 1);
     }
 
     // Remove all marks
-    // There should be no more OCCUPIED_DEAD in the stateMap, since all dead fragments are removed already
-    this.heap.stateMap = this.heap.stateMap.map(state => state === OCCUPIED_SAFE ? OCCUPIED : state);
+    this.heap.stateMap = this.heap.stateMap.map(state => state === OCCUPIED_LIVE || state === OCCUPIED_DEAD ? OCCUPIED : state);
     this.marked = false;
   }
 
