@@ -29,7 +29,7 @@ class MarkSweep {
     // Reachability test to all objects
     new ObjectGraphIterator(this.heap.fragmentsOccupied).iterateObjectGraph(this.heap.references);
     // Since all occupied states become UNKNOWN on 'clear', and reachable ones will be marked as OCCUPIED_SAFE, the rest will be OCCUPIED_DEAD
-    this.heap.stateMap.map(state => state === UNKNOWN ? OCCUPIED_DEAD : state);
+    this.heap.stateMap = this.heap.stateMap.map(state => state === UNKNOWN ? OCCUPIED_DEAD : state);
     // Let 'fragmentsOccupied' mark added fragments their state regular occupied as before
     this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED;
 
@@ -58,7 +58,8 @@ class MarkSweep {
     }
 
     // Remove all marks
-    this.heap.stateMap.map(state => state === OCCUPIED_DEAD || state === OCCUPIED_SAFE ? OCCUPIED : state);
+    // There should be no more OCCUPIED_DEAD in the stateMap, since all dead fragments are removed already
+    this.heap.stateMap = this.heap.stateMap.map(state => state === OCCUPIED_SAFE ? OCCUPIED : state);
     this.marked = false;
   }
 
