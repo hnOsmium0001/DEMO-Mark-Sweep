@@ -7,25 +7,25 @@ const BINDING_FUNCTIONS = [
    */
   function bindUnitHighlighting(bindings) {
     const stateMap = bindings.stateMap;
-    const toggleClasses = () => {
+    // Use the keyword function to define it so that 'this' can be bond dynamically by jQuery
+    const toggleClasses = function() {
       $(this).toggleClass('word-selected');
-      const wordIndex = $(this).prop('data-word-index');
+      const wordIndex = $(this).data('index');
       const currentState = stateMap[wordIndex];
 
       let previous = wordIndex - 1;
       while (stateMap[previous] === currentState) {
-        $(`word-${previous}`).toggleClass('word-selected');
+        $(`#word-${previous}`).toggleClass('word-selected');
         --previous;
       }
 
       let following = wordIndex + 1;
       while (stateMap[following] === currentState) {
-        $(`word-${following}`).toggleClass('word-selected');
+        $(`#word-${following}`).toggleClass('word-selected');
         ++following;
       }
-
     };
-    $('.uword').hover(/* Hover */ toggleClasses, /* Unhover */ toggleClasses);
+    $('.word').hover(/* Hover */ toggleClasses, /* Unhover */ toggleClasses);
   }
 ];
 

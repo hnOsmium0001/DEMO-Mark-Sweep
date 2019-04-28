@@ -33,9 +33,12 @@ class MemoryDisplay {
 
     const display = $('#memory-display');
     for (let i = 0; i < this.heap.size; ++i) {
-      display.append($(`<div id="word-${i}" class="word"></div>`)
-        .toggleClass('word-sizing')
-        .prop('data-word-index', i));
+      display.append($(`<div></div>`)
+        .id('word-' + i)
+        .addClass('word')
+        .addClass('word-sizing')
+        // For some reason, .data() won't write properly, so we add an attribute instead, and let jQuery read from it when we invoke .data() in effects.js
+        .attr('data-index', i));
     }
   }
 }

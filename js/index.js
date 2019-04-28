@@ -10,7 +10,7 @@ $(document).ready(() => {
   new Bindings(memoryDisplay).bindAll();
 
   function regenObjects() {
-    const heap = memoryDisplay.heap = new Heap(64);
+    const heap = memoryDisplay.heap;
 
     const obj_o1_1 = VirtualObject.create(2, [], heap); // 0
     const obj_o1 = VirtualObject.create(3, [obj_o1_1], heap); // 1
@@ -42,7 +42,6 @@ $(document).ready(() => {
   const heap = memoryDisplay.heap;
 
   console.log("Order: objects, occupied, free");
-  regenObjects();
 
   console.log(heap.objects);
   console.log(heap.fragmentsOccupied.storage);

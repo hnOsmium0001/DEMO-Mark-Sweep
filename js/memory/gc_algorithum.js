@@ -80,7 +80,7 @@ class MarkSweep {
       }
     }
 
-    this.heap.objects.filter(e => e !== undefined);
+    this.heap.objects = this.heap.objects.filter(e => e !== undefined);
   }
 
   collect() {
