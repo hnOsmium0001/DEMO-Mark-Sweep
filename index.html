@@ -1,21 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>DEMO - Mark & Sweep GC</title>
-        <meta charset="utf-8">
 
-        <script src="https://code.jquery.com/jquery-3.4.0.slim.min.js" integrity="sha256-ZaXnYkHGqIhqTbJ6MB4l9Frs/r7U4jlx7ir8PJYBqbI=" crossorigin="anonymous"></script>
-        <script src="./js/index.js" type="module"></script>
-        <link rel="stylesheet" type="text/css" href="./css/index.css">
-        <link rel="stylesheet" type="text/css" href="./css/unit.css">
-    </head>
-    <body>
-        <div id="container" class="container">
-            <div id="memory-display" class="memory-display">
-                <!-- Word units will be added at runtime -->
-            </div>
-            <canvas id="memory-overlay" class="memory-overlay"></canvas>
+<head>
+    <title>DEMO - Mark & Sweep GC</title>
+    <meta charset="utf-8">
+
+    <script src="https://code.jquery.com/jquery-3.4.0.slim.min.js"
+        integrity="sha256-ZaXnYkHGqIhqTbJ6MB4l9Frs/r7U4jlx7ir8PJYBqbI=" crossorigin="anonymous"></script>
+    <script src="./js/index.js" type="module"></script>
+    <link rel="stylesheet" type="text/css" href="./css/index.css">
+    <link rel="stylesheet" type="text/css" href="./css/unit.css">
+</head>
+
+<body>
+    <div id="container" class="container">
+        <div id="memory-display" class="memory-display">
+            <!-- Worad units will be added at runtime -->
         </div>
-        <button id="print-state-map">Print State Map</button>
-    </body>
+        <canvas id="memory-overlay" class="memory-overlay"></canvas>
+    </div>
+    <button id="print-state-map">Print State Map</button>
+
+    <!-- Make its contents go on a separate line regardless of their style -->
+    <div>
+        <fieldset id="keys" class="keys">
+            <legend class="keys-legend">Keys</legend>
+            <span class="key">Unknown: <div class="color-label unknown"></div></span>
+            <span class="key">Free: <div class="color-label free"></div></span>
+            <span class="key">Occupied, unmarked: <div class="color-label occupied-unmarked"></div></span>
+            <span class="key">Occupied, marked, alive: <div class="color-label occupied-marked-alive"></div></span>
+            <span class="key">Occupied, marked, dead: <div class="color-label occupied-marked-dead"></div></span>
+        </fieldset>
+    </div>
+</body>
+
 </html>

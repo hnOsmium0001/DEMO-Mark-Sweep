@@ -25,3 +25,28 @@
   /* Let hover event pass through the overlay, so that one can select units under it */
   pointer-events: none;
 }
+
+.keys {
+  /* Inline-block will try to fit to its contents. */
+  display: inline-block;
+  background-color: burlywood;
+
+  margin-top: 10px;
+}
+.keys-legend {
+  font-size: 18px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+.key {
+  /* Make them stay on their own line */
+  display: block;
+}
+
+.color-label {
+  display: inline-block;
+
+  /* Golden ratio */
+  width: 16.18px;
+  height: 10px;
+}
