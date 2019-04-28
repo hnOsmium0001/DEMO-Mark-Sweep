@@ -34,7 +34,7 @@ class MarkingFragments extends Fragments {
   }
 
   clear() {
-    this.stateMap.map(state => state === this.stateOnAdd ? UNKNOWN : state);
+    this.stateMap = this.stateMap.map(state => state === this.stateOnAdd ? UNKNOWN : state);
     super.clear();
   }
 
