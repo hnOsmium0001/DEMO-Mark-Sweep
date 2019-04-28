@@ -24,27 +24,18 @@ class MarkingFragments extends Fragments {
   }
 
   remove(fragment) {
-    this.stateMap.fill(UNKNOWN, fragment.begin, fragment.end + 1);
+    this.heap.stateMap.fill(UNKNOWN, fragment.begin, fragment.end + 1);
     super.remove(fragment);
   }
 
   insertFragmentAt(fragment, i) {
-    this.stateMap.fill(this.stateOnAdd, fragment.begin, fragment.end + 1);
+    this.heap.stateMap.fill(this.stateOnAdd, fragment.begin, fragment.end + 1);
     super.insertFragmentAt(fragment, i);
   }
 
   clear() {
-    this.stateMap = this.stateMap.map(state => state === this.stateOnAdd ? UNKNOWN : state);
+    this.heap.stateMap = this.heap.stateMap.map(state => state === this.stateOnAdd ? UNKNOWN : state);
     super.clear();
-  }
-
-  /**
-   * Get the stateMap property from the heap object bond.
-   * @returns {number[]}
-   * @private
-   */
-  get stateMap() {
-    return this.heap.stateMap;
   }
 }
 
