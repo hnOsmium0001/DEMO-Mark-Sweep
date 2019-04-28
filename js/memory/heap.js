@@ -62,7 +62,8 @@ class Heap {
     this.size = size;
     this.fragmentsFree = new MarkingFragments(this, FREE);
     this.fragmentsOccupied = new MarkingFragments(this, OCCUPIED);
-    this.stateMap = [];
+    // Use 'new' since it is this best way to create an array with certain length here
+    this.stateMap = new Array(size).fill(UNKNOWN);
     this._gc = null;
     this.objects = [];
     // References to objects in 'this.objects'
