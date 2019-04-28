@@ -48,6 +48,7 @@ class ObservableArray {
   fill(value, start = 0, end = this.handle.length) {
     this.handle.fill(value, start, end);
     this.fire(range(start, end));
+    return this;
   }
 
   includes(value) {
@@ -55,7 +56,7 @@ class ObservableArray {
   }
 
   map(callback) {
-    this.handle.map(callback);
+    return this.handle.map(callback);
   }
 
   /**
@@ -66,6 +67,7 @@ class ObservableArray {
       this.handle[i] = callback(this.handle[i], i);
     }
     this.fire(range(0, this.handle.length));
+    return this;
   }
 
   clear() {

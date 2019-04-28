@@ -3,6 +3,7 @@ import { Heap, UNKNOWN, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD } from "../memor
 
 const state2Class = {};
 state2Class[UNKNOWN] = 'unknown';
+state2Class[FREE] = 'free';
 state2Class[OCCUPIED] = 'occupied-unmarked';
 state2Class[OCCUPIED_ALIVE] = 'occupied-marked-alive';
 state2Class[OCCUPIED_DEAD] = 'occupied-marked-dead';
@@ -40,7 +41,7 @@ const BINDING_FUNCTIONS = [
    * @param {Bindings} bindings 
    */
   function bindUnitColoring(bindings) {
-    bindings.stateMap.subscribe((updatedIndices) => {
+    bindings.stateMap.subscribe(updatedIndices => {
       for (const i of updatedIndices) {
         // Override the class attribute to the original state, and then add the color class
         $(`#word-${i}`).attr('class', 'word word-sizing').addClass(state2Class[bindings.stateMap.at(i)]);
