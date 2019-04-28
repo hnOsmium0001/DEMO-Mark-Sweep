@@ -1,5 +1,5 @@
+import { FREE, Heap, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, UNKNOWN } from "../memory/heap.js";
 import { MemoryDisplay } from "./memory_display.js";
-import { Heap, UNKNOWN, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD } from "../memory/heap.js";
 
 const state2Class = {};
 state2Class[UNKNOWN] = 'unknown';
@@ -18,7 +18,7 @@ const BINDING_FUNCTIONS = [
   function bindUnitHighlighting(bindings) {
     const stateMap = bindings.stateMap;
     // Use the keyword function to define it so that 'this' can be bond dynamically by jQuery
-    const toggleClasses = function() {
+    const toggleClasses = function () {
       $(this).toggleClass('word-selected');
       const wordIndex = $(this).data('index');
       const currentState = stateMap[wordIndex];

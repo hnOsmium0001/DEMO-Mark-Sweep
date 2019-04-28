@@ -37,3 +37,4 @@ class VirtualObject {
 }
 
 export { VirtualObject };
+

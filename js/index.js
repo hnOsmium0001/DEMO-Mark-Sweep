@@ -1,7 +1,6 @@
-import { Heap } from './memory/heap.js'
 import { VirtualObject } from './memory/objects.js';
-import { MemoryDisplay } from './ui/memory_display.js';
 import { Bindings } from './ui/effects.js';
+import { MemoryDisplay } from './ui/memory_display.js';
 
 $(document).ready(() => {
   const memoryDisplay = new MemoryDisplay(64);

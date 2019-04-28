@@ -1,6 +1,6 @@
-import { Fragments, Fragment } from './fragment.js';
-import { Iteration } from '../iteration.js';
 import { ObservableArray } from '../array.js';
+import { Iteration } from '../iteration.js';
+import { Fragment, Fragments } from './fragment.js';
 
 /** Unit in unknown state, created when the unit is being removed. */
 const UNKNOWN = 0;
@@ -176,3 +176,4 @@ class Heap {
 }
 
 export { UNKNOWN, FREE, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, MarkingFragments, Heap };
+

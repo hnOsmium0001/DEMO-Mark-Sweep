@@ -1,12 +1,8 @@
-import { Heap } from "../memory/heap.js";
 import { MarkSweep } from "../memory/gc_algorithum.js";
+import { Heap } from "../memory/heap.js";
 
 const BASE_UNIT_SIZE = 64;
 const SIZE_SHRINK_PERIOD = 8;
-
-/** Unit only has margin on the left and the bottom, so couting them once is enought */
-const UNIT_MARGIN = 4;
-const UNIT_BORDER = 1;
 
 class MemoryDisplay {
   /**
@@ -45,3 +41,4 @@ class MemoryDisplay {
 }
 
 export { MemoryDisplay };
+

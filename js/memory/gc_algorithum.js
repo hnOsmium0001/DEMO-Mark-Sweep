@@ -1,6 +1,6 @@
-import { VirtualObject } from './objects.js';
-import { Heap, MarkingFragments, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD } from './heap.js';
 import { Iteration } from '../iteration.js';
+import { Heap, MarkingFragments, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD } from './heap.js';
+import { VirtualObject } from './objects.js';
 
 class MarkSweep {
   /**
@@ -115,3 +115,4 @@ class ObjectGraphIterator {
 }
 
 export { MarkSweep };
+
