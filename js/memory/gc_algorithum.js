@@ -1,5 +1,5 @@
 import { VirtualObject } from './objects.js';
-import { Heap, MarkingFragments, UNKNOWN, OCCUPIED_SAFE, OCCUPIED_DEAD } from './heap.js';
+import { Heap, MarkingFragments, UNKNOWN, OCCUPIED, OCCUPIED_SAFE, OCCUPIED_DEAD } from './heap.js';
 import { Iteration } from '../iteration.js';
 
 
@@ -24,13 +24,13 @@ class MarkSweep {
       throw "Existing unknown states exist in state map";
     }
     // Let 'fragmentsOccupied' mark added fragments their state safe, as they are reachable
-    this.fragmentsOccupied.stateOnAdd = OCCUPIED_SAFE;
+    this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED_SAFE;
     // Reachability test to all objects
     new ObjectGraphIterator(this.heap.fragmentsOccupied).iterateObjectGraph(this.heap.references);
     // Since all occupied states become UNKNOWN on 'clear', and reachable ones will be marked as OCCUPIED_SAFE, the rest will be OCCUPIED_DEAD
     this.heap.stateMap.map(state => state === UNKNOWN ? OCCUPIED_DEAD : state);
     // Let 'fragmentsOccupied' mark added fragments their state regular occupied as before
-    this.fragmentsOccupied.stateOnAdd = OCCUPIED;
+    this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED;
 
     this.marked = true;
   }
@@ -55,6 +55,8 @@ class MarkSweep {
       this.heap.fragmentsFree.addRange(head, fragment.begin - 1);
     }
 
+    // Remove all marks
+    this.heap.stateMap.map(state => state === OCCUPIED_DEAD || state === OCCUPIED_SAFE ? OCCUPIED : state);
     this.marked = false;
   }
 

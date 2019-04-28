@@ -34,8 +34,8 @@ class MarkingFragments extends Fragments {
   insertFragmentAt(fragment, i) {
     // Partial check
     if (this.stateMap[fragment.begin] === UNKNOWN && this.stateMap[fragment.end] === UNKNOWN) { 
-      this.stateMap.fill(this.stateOnAdd, fragment.begin, fragment.end);
-      super.insertFragmentAt(fragment);
+      this.stateMap.fill(this.stateOnAdd, fragment.begin, fragment.end + 1);
+      super.insertFragmentAt(fragment, i);
     }
   }
 

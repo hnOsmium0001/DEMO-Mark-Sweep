@@ -1,10 +1,12 @@
 import { VirtualObject } from './memory/objects.js';
 import { MemoryDisplay } from './ui/memory_display.js';
-import { Heap } from './memory/heap.js';
+import { Bindings } from './ui/effects.js';
 
 $(document).ready(() => {
   const memoryDisplay = new MemoryDisplay(64);
   memoryDisplay.init();
+
+  new Bindings(memoryDisplay).bindAll();
 
   function regenObjects() {
     // const heap = memoryDisplay.heap = new Heap(64);
