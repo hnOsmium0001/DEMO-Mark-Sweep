@@ -23,7 +23,7 @@
 .occupied-unmarked {
   background-color: red;
 }
-.occupied-marked-living {
+.occupied-marked-alive {
   background-color: orange;
 }
 .occupied-marked-dead {

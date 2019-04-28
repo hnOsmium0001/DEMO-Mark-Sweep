@@ -43,9 +43,9 @@ class ObservableArray {
    *  
    * @param {any} value 
    * @param {number} [start = 0] 
-   * @param {number} [end = this.handle.length]
+   * @param {number} [end = this.length]
    */
-  fill(value, start = 0, end = this.handle.length) {
+  fill(value, start = 0, end = this.length) {
     this.handle.fill(value, start, end);
     this.fire(range(start, end));
     return this;
@@ -56,7 +56,7 @@ class ObservableArray {
   }
 
   map(callback) {
-    const observableArray = new ObservableArray(this.handle.length);
+    const observableArray = new ObservableArray(this.length);
     observableArray.handle = this.handle.map(callback)
     return observableArray;
   }
@@ -65,15 +65,15 @@ class ObservableArray {
    * Fires event.
    */
   mapInplace(callback) {
-    for (let i = 0; i < this.handle.length; ++i) {
+    for (let i = 0; i < this.length; ++i) {
       this.handle[i] = callback(this.handle[i], i);
     }
-    this.fire(range(0, this.handle.length));
+    this.fire(range(0, this.length));
     return this;
   }
 
   clear() {
-    this.handle.length = 0;
+    this.length = 0;
   }
 
   at(i) {
@@ -86,6 +86,14 @@ class ObservableArray {
   put(i, value) {
     this.handle[i] = value;
     this.fire([i]);
+  }
+
+  get length() {
+    return this.handle.length;
+  }
+
+  set length(length) {
+    this.handle.length = length;
   }
 }
 
