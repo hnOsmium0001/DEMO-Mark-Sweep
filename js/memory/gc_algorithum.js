@@ -9,6 +9,7 @@ class MarkSweep {
    */
   constructor(heap) {
     this.heap = heap;
+    this.marked = false;
   }
 
   mark() {
@@ -20,8 +21,8 @@ class MarkSweep {
     this.heap.fragmentsOccupied.clear();
 
     // Extra Idoit-Proof checks, should never happen
-    if (this.heap.stateMap.findIndex(state => state === UNKNOWN) !== -1) {
-      throw "Existing unknown states exist in state map";
+    if (this.heap.stateMap.includes(UNKNOWN)) {
+      throw "Existing unknown states in the state map";
     }
     // Let 'fragmentsOccupied' mark added fragments their state safe, as they are reachable
     this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED_SAFE;
@@ -48,6 +49,7 @@ class MarkSweep {
         this.heap.fragmentsFree.addRange(head, fragment.begin - 1);
       }
       head = fragment.end + 1;
+      return Iteration.CONTINUE;
     });
 
     // Do this one more time for the last fragment, as there might be a fragment after all other occupied ones

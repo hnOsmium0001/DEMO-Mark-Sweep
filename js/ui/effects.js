@@ -25,7 +25,7 @@ const BINDING_FUNCTIONS = [
       }
 
     };
-    $('word').hover(/* Hover */ toggleClasses, /* Unhover */ toggleClasses);
+    $('.uword').hover(/* Hover */ toggleClasses, /* Unhover */ toggleClasses);
   }
 ];
 

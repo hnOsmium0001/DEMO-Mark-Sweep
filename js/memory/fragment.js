@@ -249,9 +249,11 @@ class Fragments {
    */
   forEach(lambda) {
     for (const fragment of this.storage) {
-      switch (lambda(fragment)) {
+      const signal = lambda(fragment);
+      switch (signal) {
         case Iteration.CONTINUE: break;
         case Iteration.TERMINATE: return;
+        default: throw `Unknown signal received: ${signal}`;
       }
     }
   }

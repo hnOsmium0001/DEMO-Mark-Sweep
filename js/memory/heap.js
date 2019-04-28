@@ -24,19 +24,13 @@ class MarkingFragments extends Fragments {
   }
 
   remove(fragment) {
-    // Partial check
-    if (this.stateMap[fragment.begin] === this.stateOnAdd && this.stateMap[fragment.end] === this.stateOnAdd) { 
-      this.stateMap.fill(UNKNOWN, fragment.begin, fragment.end);
-      super.remove(fragment);
-    }
+    this.stateMap.fill(UNKNOWN, fragment.begin, fragment.end + 1);
+    super.remove(fragment);
   }
 
   insertFragmentAt(fragment, i) {
-    // Partial check
-    if (this.stateMap[fragment.begin] === UNKNOWN && this.stateMap[fragment.end] === UNKNOWN) { 
-      this.stateMap.fill(this.stateOnAdd, fragment.begin, fragment.end + 1);
-      super.insertFragmentAt(fragment, i);
-    }
+    this.stateMap.fill(this.stateOnAdd, fragment.begin, fragment.end + 1);
+    super.insertFragmentAt(fragment, i);
   }
 
   clear() {
