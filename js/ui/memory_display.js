@@ -34,10 +34,11 @@ class MemoryDisplay {
     const display = $('#memory-display');
     for (let i = 0; i < this.heap.size; ++i) {
       display.append($(`<div></div>`)
-        .id('word-' + i)
+        .prop('id', `word-${i}`)
         .addClass('word')
         .addClass('word-sizing')
         // For some reason, .data() won't write properly, so we add an attribute instead, and let jQuery read from it when we invoke .data() in effects.js
+        // Use .attr() instead of .prop() because our data attribute doesn't exist as a property
         .attr('data-index', i));
     }
   }
