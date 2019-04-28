@@ -21,16 +21,16 @@ const BINDING_FUNCTIONS = [
     const toggleClasses = function () {
       $(this).toggleClass('word-selected');
       const wordIndex = $(this).data('index');
-      const currentState = stateMap[wordIndex];
+      const currentState = stateMap.at(wordIndex);
 
       let previous = wordIndex - 1;
-      while (stateMap[previous] === currentState) {
+      while (stateMap.at(previous) === currentState) {
         $(`#word-${previous}`).toggleClass('word-selected');
         --previous;
       }
 
       let following = wordIndex + 1;
-      while (stateMap[following] === currentState) {
+      while (stateMap.at(following) === currentState) {
         $(`#word-${following}`).toggleClass('word-selected');
         ++following;
       }
