@@ -37,27 +37,27 @@ $(document).ready(() => {
     const randomObj2 = VirtualObject.create(8, [randomObj1, obj_o1, obj], heap) // 10
     randomObj1.ref.push(randomObj2);
   }
+  regenObjects();
+
+  const heap = memoryDisplay.heap;
 
   console.log("Order: objects, occupied, free");
+  regenObjects();
+
+  console.log(heap.objects);
+  console.log(heap.fragmentsOccupied.storage);
+  console.log(heap.fragmentsFree.storage);
+
+  heap.gc.collect();
+  console.log("GC");
+
+  console.log(heap.objects);
+  console.log(heap.fragmentsOccupied.storage);
+  console.log(heap.fragmentsFree.storage);
 
   $('#print-state-map').click(() => {
     const heap = memoryDisplay.heap;
     console.log(heap.stateMap);
-  });
-  $('#regen').click(() => {
-    const heap = memoryDisplay.heap;
-    regenObjects();
-
-    console.log(heap.objects);
-    console.log(heap.fragmentsOccupied.storage);
-    console.log(heap.fragmentsFree.storage);
-
-    heap.gc.collect();
-    console.log("GC");
-
-    console.log(heap.objects);
-    console.log(heap.fragmentsOccupied.storage);
-    console.log(heap.fragmentsFree.storage);
   });
 });
 
