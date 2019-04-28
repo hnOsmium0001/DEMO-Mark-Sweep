@@ -6,7 +6,7 @@
  * @returns {number[]} An arithmetic sequence.
  */
 function range(start = 0, end) {
-  return Array.from(Array(end - start), (v, i) => i + start);
+  return Array.from(new Array(end - start), (v, i) => i + start);
 }
 
 class ObservableArray {
