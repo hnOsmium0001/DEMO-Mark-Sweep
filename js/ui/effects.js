@@ -44,7 +44,7 @@ const BINDING_FUNCTIONS = [
     bindings.stateMap.subscribe(updatedIndices => {
       for (const i of updatedIndices) {
         // Override the class attribute to the original state, and then add the color class
-        $(`#word-${i}`).attr('class', 'word word-sizing').addClass(state2Class[bindings.stateMap.at(i)]);
+        $(`#word-${i}`).prop('class', 'word word-sizing').addClass(state2Class[bindings.stateMap.at(i)]);
       }
     });
   }
