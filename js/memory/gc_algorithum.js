@@ -1,5 +1,5 @@
 import { VirtualObject } from './objects.js';
-import { Heap, MarkingFragments, OCCUPIED, OCCUPIED_LIVE, OCCUPIED_DEAD } from './heap.js';
+import { Heap, MarkingFragments, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD } from './heap.js';
 import { Iteration } from '../iteration.js';
 
 class MarkSweep {
@@ -22,7 +22,7 @@ class MarkSweep {
     this.heap.fragmentsOccupied.clear(false);
 
     // Let 'fragmentsOccupied' mark added fragments their state safe, as they are reachable
-    this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED_LIVE;
+    this.heap.fragmentsOccupied.stateOnAdd = OCCUPIED_ALIVE;
     // Reachability test to all objects
     new ObjectGraphIterator(this.heap.fragmentsOccupied).iterateObjectGraph(this.heap.references);
     // Since all occupied states are untouched during marking, and the reachable ones are marked as OCCUPIED_LIVE, they are deade (unreachable)
@@ -55,7 +55,7 @@ class MarkSweep {
     }
 
     // Remove all marks
-    this.heap.stateMap = this.heap.stateMap.map(state => state === OCCUPIED_LIVE || state === OCCUPIED_DEAD ? OCCUPIED : state);
+    this.heap.stateMap = this.heap.stateMap.map(state => state === OCCUPIED_ALIVE || state === OCCUPIED_DEAD ? OCCUPIED : state);
     this.marked = false;
   }
 

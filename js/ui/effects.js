@@ -1,6 +1,15 @@
 import { MemoryDisplay } from "./memory_display.js";
-import { Heap } from "../memory/heap.js";
+import { Heap, UNKNOWN, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD } from "../memory/heap.js";
 
+const state2Class = {};
+state2Class[UNKNOWN] = 'unknown';
+state2Class[OCCUPIED] = 'occupied-unmarked';
+state2Class[OCCUPIED_ALIVE] = 'occupied-marked-alive';
+state2Class[OCCUPIED_DEAD] = 'occupied-marked-dead';
+
+/**
+ * @type {((bindings: Bindings) => void)[]}
+ */
 const BINDING_FUNCTIONS = [
   /**
    * @param {Bindings} bindings 
@@ -26,6 +35,17 @@ const BINDING_FUNCTIONS = [
       }
     };
     $('.word').hover(/* Hover */ toggleClasses, /* Unhover */ toggleClasses);
+  },
+  /**
+   * @param {Bindings} bindings 
+   */
+  function bindUnitColoring(bindings) {
+    bindings.stateMap.subscribe((updatedIndices) => {
+      for (const i of updatedIndices) {
+        // Override the class attribute to the original state, and then add the color class
+        $(`#word-${i}`).attr('class', 'word word-sizing').addClass(state2Class[bindings.stateMap.at(i)]);
+      }
+    });
   }
 ];
 

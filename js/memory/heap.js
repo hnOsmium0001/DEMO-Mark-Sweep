@@ -1,5 +1,6 @@
 import { Fragments, Fragment } from './fragment.js';
 import { Iteration } from '../iteration.js';
+import { ObservableArray } from '../array.js';
 
 /** Unit in unknown state, created when the unit is being removed. */
 const UNKNOWN = 0;
@@ -8,7 +9,7 @@ const FREE = 1;
 /** Occupied, unmarked unit. */
 const OCCUPIED = 2;
 /** Occupied, marked unit and is safe from sweep. */
-const OCCUPIED_LIVE = 3;
+const OCCUPIED_ALIVE = 3;
 /** Occupied, marked unit but need to be sweeped. */
 const OCCUPIED_DEAD = 4;
 
@@ -38,7 +39,7 @@ class MarkingFragments extends Fragments {
    */
   clear(wipeStateMap = true) {
     if (wipeStateMap) {
-      this.heap.stateMap = this.heap.stateMap.map(state => state === this.stateOnAdd ? UNKNOWN : state);
+      this.heap.stateMap.mapInplace(state => state === this.stateOnAdd ? UNKNOWN : state);
     }
     super.clear();
   }
@@ -53,7 +54,7 @@ class Heap {
     this.fragmentsFree = new MarkingFragments(this, FREE);
     this.fragmentsOccupied = new MarkingFragments(this, OCCUPIED);
     // Use 'new' since it is this best way to create an array with certain length here
-    this.stateMap = new Array(size).fill(UNKNOWN);
+    this.stateMap = new ObservableArray(size, UNKNOWN);
     this._gc = null;
     this.objects = [];
     // References to objects in 'this.objects'
@@ -174,4 +175,4 @@ class Heap {
   }
 }
 
-export { UNKNOWN, FREE, OCCUPIED, OCCUPIED_LIVE, OCCUPIED_DEAD, MarkingFragments, Heap };
+export { UNKNOWN, FREE, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, MarkingFragments, Heap };
