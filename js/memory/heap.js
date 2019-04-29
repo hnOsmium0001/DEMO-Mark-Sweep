@@ -1,5 +1,5 @@
 import { ObservableArray } from '../array.js';
-import { Iteration } from '../iteration.js';
+import { Iteration } from '../utils.js/';
 import { Fragment, Fragments } from './fragment.js';
 
 /** Unit in unknown state, created when the unit is being removed. */
@@ -62,20 +62,14 @@ class Heap {
 
     this.fragmentsFree.addRange(0, this.endIndex);
   }
-
-  /**
-   * Alias to {@code this.root}.
-   * @returns {Fragment[]}
-   */
-  get references() {
-    return this.root;
-  }
-
+  
   /**
    * @param {number} ptr 
    */
   addReference(ptr) {
-    this.root.push(ptr);
+    if (this.root.includes(ptr)) {
+      this.root.push(ptr);
+    }
   }
 
   clearReferences() {

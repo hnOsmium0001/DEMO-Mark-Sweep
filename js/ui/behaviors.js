@@ -1,7 +1,8 @@
-import { Iteration } from "../iteration.js";
+import { Iteration } from "../utils.js";
 import { FREE, Heap, MarkingFragments, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, UNKNOWN } from "../memory/heap.js";
 import { VirtualObject } from '../memory/objects.js';
 import { MemoryDisplay } from "./memory_display.js";
+import { random } from "../utils.js";
 
 /**
  * @param {Fragments} fragments 
@@ -69,32 +70,50 @@ function bindUnitColoring(bindings) {
 
 // ---------------------------------------------------------------- //
 
-// TODO truly random
+const MIN_OBJECT_SIZE = 2;
+const MAX_OBJECT_SIZE = 16;
+const MAX_AMOUNT_OBJECT_REFERENCES = 6;
+const MAX_AMOUNT_ROOTS = 3;
+
+function randomReferences(objects) {
+  const amountToGenerate = random(0, MAX_AMOUNT_OBJECT_REFERENCES);
+  const selected = new Set();
+
+  for(let i = 0; i < amountToGenerate; ++i) {
+    const referenceIndex = random(0, objects.length - 1);
+    if (selected.has(referenceIndex)) {
+      // Redo loop
+      --i;
+      continue;
+    }
+    selected.add(objects[referenceIndex]);
+  }
+
+  return [...selected];
+}
+
 function regenerateObjects(heap) {
-  const obj_o1_1 = VirtualObject.create(2, [], heap); // 0
-  const obj_o1 = VirtualObject.create(3, [obj_o1_1], heap); // 1
+  const objects = [];
 
-  const obj_o2_1 = VirtualObject.create(2, [], heap); // 2
-  const obj_o2_2 = VirtualObject.create(2, [], heap); // 3
-  obj_o1_1.ref.push(obj_o2_2);
-  const obj_o2 = VirtualObject.create(6, [obj_o2_1, obj_o2_2], heap); // 4
+  // Between 1/2 and 2/3 of the heap
+  let amountToFill = random(heap.size * (1 / 2), heap.size * (2 / 3));
+  while (amountToFill > 0) {
+    const objectSize = Math.min(amountToFill, random(MIN_OBJECT_SIZE, MAX_OBJECT_SIZE));
+    const references = randomReferences(objects);
+    const object = VirtualObject.create(objectSize, references, heap, false);
+    // Unable to allocate enough space for the object
+    if (!object) {
+      continue;
+    }
 
-  const obj_o3 = VirtualObject.create(1, [], heap); // 5
+    objects.push(object);
+    amountToFill -= objectSize;
+  }
 
-  const wildObj = VirtualObject.create(1, [], heap) // 6
-
-  const obj = VirtualObject.create(2, [obj_o1, obj_o2, obj_o3], heap); // 7
-  const obj2 = VirtualObject.create(4, [obj_o1, obj], heap); // 8
-  obj_o3.ref.push(obj);
-  obj_o3.ref.push(obj2);
-
-  heap.addReference(obj);
-  heap.addReference(obj2);
-
-  // Loop referencing
-  const randomObj1 = VirtualObject.create(2, [], heap); // 9
-  const randomObj2 = VirtualObject.create(8, [randomObj1, obj_o1, obj], heap) // 10
-  randomObj1.ref.push(randomObj2);
+  const amountRoots = Math.max(objects.length, MAX_AMOUNT_ROOTS);
+  while (heap.root.length < amountRoots) {
+    heap.addReference(objects[random(0, objects.length)]);
+  }
 }
 
 /**

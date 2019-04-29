@@ -8,12 +8,17 @@ class VirtualObject {
    * @param {number} size 
    * @param {Array} ref 
    * @param {Heap} heap 
+   * @param {boolean} [throwErrors = true]
    * @returns {VirtualObject}
    */
-  static create(size, ref, heap) {
+  static create(size, ref, heap, throwErrors = true) {
     const allocedBegin = heap.allocate(size);
     if (allocedBegin == -1) {
-      throw `Unable to allocate enough space for the given object: size=${size}`;
+      if (throwErrors) {
+        throw `Unable to allocate enough space for the given object: size=${size}`;
+      } else {
+        return null;
+      }
     }
 
     const object = new VirtualObject(heap.objects.length, allocedBegin, size, ref);
