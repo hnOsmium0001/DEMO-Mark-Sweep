@@ -1,4 +1,4 @@
-import { Iteration } from '../utils.js/';
+import { Iteration } from '../utils.js';
 import { Heap, MarkingFragments, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD } from './heap.js';
 import { VirtualObject } from './objects.js';
 

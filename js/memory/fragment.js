@@ -1,4 +1,4 @@
-import { Iteration } from "../utils.js/";
+import { Iteration } from "../utils.js";
 
 class Fragment {
   /**

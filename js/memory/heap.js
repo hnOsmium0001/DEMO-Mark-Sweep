@@ -1,5 +1,5 @@
 import { ObservableArray } from '../array.js';
-import { Iteration } from '../utils.js/';
+import { Iteration } from '../utils.js';
 import { Fragment, Fragments } from './fragment.js';
 
 /** Unit in unknown state, created when the unit is being removed. */
