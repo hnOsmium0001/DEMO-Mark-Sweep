@@ -1,7 +1,7 @@
 import { Iteration } from "../iteration.js";
 import { FREE, Heap, MarkingFragments, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, UNKNOWN } from "../memory/heap.js";
+import { VirtualObject } from '../memory/objects.js';
 import { MemoryDisplay } from "./memory_display.js";
-import { VirtualObject } from '../memory/objects.js'
 
 /**
  * @param {Fragments} fragments 
@@ -102,7 +102,7 @@ function regenerateObjects(heap) {
  */
 function bindButtonClicks(bindings) {
   $('#reset').click(function () {
-    bindings.memoryDisplay.init($('#heap-size').val());
+    bindings.memoryDisplay.init(parseInt($('#heap-size').val()));
     bindUnitColoring(bindings);
   });
 

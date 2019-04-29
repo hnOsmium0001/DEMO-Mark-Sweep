@@ -18,14 +18,14 @@ class MemoryDisplay {
   init(size) {
     this.heap = new Heap(size);
     this.heap.gc = new MarkSweep(this.heap);
-    this.populateWordElements(0, this.heap.size);
+    this.populateWordElements();
   }
 
   /**
    * @param {number} size 
    */
-  populateWordElements(size) {
-    const sideLength = Math.sqrt(size);
+  populateWordElements() {
+    const sideLength = Math.sqrt(this.size);
     if (!Number.isInteger(sideLength)) {
       throw "Unable to display a heap with size that is not a perfect square";
     }
@@ -38,8 +38,8 @@ class MemoryDisplay {
     // Unfortunately vanilla jQuery doesn't support modifying CSS Stylesheets directly
     document.styleSheets[0].addRule('.word-sizing', `width: ${unitSize}px; height: ${unitSize}px;`, 1);
 
-    const display = $('#memory-display');
-    for (let i = 0; i < size; ++i) {
+    const display = $('#memory-display').empty();
+    for (let i = 0; i < this.size; ++i) {
       display.append($(`<div></div>`)
         .prop('id', `word-${i}`)
         .addClass('word')
