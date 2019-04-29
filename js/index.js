@@ -1,5 +1,5 @@
 import { VirtualObject } from './memory/objects.js';
-import { Bindings } from './ui/behaviors.js/index.js';
+import { Bindings } from './ui/behaviors.js';
 import { MemoryDisplay } from './ui/memory_display.js';
 
 $(document).ready(() => {
