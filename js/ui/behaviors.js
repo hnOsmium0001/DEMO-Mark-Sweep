@@ -55,6 +55,7 @@ const BINDING_FUNCTIONS = [
     };
     $('.word').hover(/* Hover */ toggleClasses, /* Unhover */ toggleClasses);
   },
+
   /**
    * @param {Bindings} bindings 
    */
@@ -64,6 +65,19 @@ const BINDING_FUNCTIONS = [
         // Override the class attribute to the original state, and then add the color class
         $(`#word-${i}`).prop('class', 'word word-sizing').addClass(state2Class[bindings.stateMap.at(i)]);
       }
+    });
+  },
+
+  /**
+   * @param {Bindings} bindings 
+   */
+  function bindButtonClicks(bindings) {
+    $('#mark').click(function() {
+      bindings.heap.gc.mark();
+    });
+    $('#sweep').click(function() {
+      bindings.heap.gc.sweep();
+      bindings.heap.gc.updateObjectContainer();
     });
   }
 ];

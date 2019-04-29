@@ -1,5 +1,5 @@
 import { VirtualObject } from './memory/objects.js';
-import { Bindings } from './ui/effects.js';
+import { Bindings } from './ui/behaviors.js/index.js';
 import { MemoryDisplay } from './ui/memory_display.js';
 
 $(document).ready(() => {
@@ -38,24 +38,19 @@ $(document).ready(() => {
   }
   regenObjects();
 
-  const heap = memoryDisplay.heap;
+  // const heap = memoryDisplay.heap;
 
-  console.log("Order: objects, occupied, free");
+  // console.log("Order: objects, occupied, free");
 
-  console.log(heap.objects);
-  console.log(heap.fragmentsOccupied.storage);
-  console.log(heap.fragmentsFree.storage);
+  // console.log(heap.objects);
+  // console.log(heap.fragmentsOccupied.storage);
+  // console.log(heap.fragmentsFree.storage);
 
-  heap.gc.collect();
-  console.log("GC");
+  // heap.gc.collect();
+  // console.log("GC");
 
-  console.log(heap.objects);
-  console.log(heap.fragmentsOccupied.storage);
-  console.log(heap.fragmentsFree.storage);
-
-  $('#print-state-map').click(() => {
-    const heap = memoryDisplay.heap;
-    console.log(heap.stateMap);
-  });
+  // console.log(heap.objects);
+  // console.log(heap.fragmentsOccupied.storage);
+  // console.log(heap.fragmentsFree.storage);
 });
 
