@@ -103,6 +103,7 @@ function regenerateObjects(heap) {
 function bindButtonClicks(bindings) {
   $('#reset').click(function () {
     bindings.memoryDisplay.init(parseInt($('#heap-size').val()));
+    bindUnitHighlighting(bindings);
     bindUnitColoring(bindings);
   });
 

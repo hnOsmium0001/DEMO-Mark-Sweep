@@ -2,7 +2,7 @@ import { MarkSweep } from "../memory/gc_algorithum.js";
 import { Heap } from "../memory/heap.js";
 
 const BASE_UNIT_SIZE = 64;
-const SIZE_SHRINK_PERIOD = 8;
+const SIZE_SHRINK_PERIOD = 128;
 
 class MemoryDisplay {
   /**
@@ -21,22 +21,13 @@ class MemoryDisplay {
     this.populateWordElements();
   }
 
-  /**
-   * @param {number} size 
-   */
   populateWordElements() {
-    const sideLength = Math.sqrt(this.size);
-    if (!Number.isInteger(sideLength)) {
-      throw "Unable to display a heap with size that is not a perfect square";
-    }
-
-    const shrinkFactor = 1 / Math.ceil(sideLength / SIZE_SHRINK_PERIOD);
+    // Limit the number used for unitSize calculation so that it doesn't go crazyly tiny when heap size is larger
+    const shrinkFactor = SIZE_SHRINK_PERIOD / Math.min(this.size, 1024);
     const unitSize = BASE_UNIT_SIZE * shrinkFactor;
 
-    // We don't really care about where this class go in the style sheet, and which style sheet it goes to,
-    // assuming we have a style sheet (which is the case)
-    // Unfortunately vanilla jQuery doesn't support modifying CSS Stylesheets directly
-    document.styleSheets[0].addRule('.word-sizing', `width: ${unitSize}px; height: ${unitSize}px;`, 1);
+    // Create a new CSS class to give units width and height
+    $('head').append($('<style></style>').html(`.word-sizing { width: ${unitSize}px; height: ${unitSize}px; }`));
 
     const display = $('#memory-display').empty();
     for (let i = 0; i < this.size; ++i) {

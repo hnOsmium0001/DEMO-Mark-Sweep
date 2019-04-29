@@ -2,7 +2,7 @@ import { Bindings } from './ui/behaviors.js';
 import { MemoryDisplay } from './ui/memory_display.js';
 
 $(document).ready(() => {
-  const memoryDisplay = new MemoryDisplay(64);
+  const memoryDisplay = new MemoryDisplay(parseInt($('#heap-size').val()));
 
   new Bindings(memoryDisplay).bindAll();
 
