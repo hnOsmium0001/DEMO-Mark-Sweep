@@ -1,4 +1,5 @@
-import { FREE, Heap, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, UNKNOWN } from "../memory/heap.js";
+import { Iteration } from "../iteration.js";
+import { FREE, Heap, MarkingFragments, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, UNKNOWN } from "../memory/heap.js";
 import { MemoryDisplay } from "./memory_display.js";
 
 const state2Class = {};
@@ -7,6 +8,22 @@ state2Class[FREE] = 'free';
 state2Class[OCCUPIED] = 'occupied-unmarked';
 state2Class[OCCUPIED_ALIVE] = 'occupied-marked-alive';
 state2Class[OCCUPIED_DEAD] = 'occupied-marked-dead';
+
+/**
+ * @param {Fragments} fragments 
+ * @param {number} ptr 
+ */
+function findFragmentCovers(fragments, ptr) {
+  let result = null;
+  fragments.forEach(fragment => {
+    if (fragment.begin <= ptr && fragment.end >= ptr) {
+      result = fragment;
+      return Iteration.TERMINATE;
+    }
+    return Iteration.CONTINUE;
+  });
+  return result;
+}
 
 /**
  * @type {((bindings: Bindings) => void)[]}
@@ -19,20 +36,21 @@ const BINDING_FUNCTIONS = [
     const stateMap = bindings.stateMap;
     // Use the keyword function to define it so that 'this' can be bond dynamically by jQuery
     const toggleClasses = function () {
-      $(this).toggleClass('word-selected');
+      // This is unnecessary since it is already achieved by using word:hover in CSS
+      // $(this).toggleClass('word-selected');
+      
       const wordIndex = $(this).data('index');
-      const currentState = stateMap.at(wordIndex);
+      const fragment = findFragmentCovers(bindings.fragmentsOccupied, wordIndex) || findFragmentCovers(bindings.fragmentsFree, wordIndex);
 
-      let previous = wordIndex - 1;
-      while (stateMap.at(previous) === currentState) {
-        $(`#word-${previous}`).toggleClass('word-selected');
-        --previous;
+      // If we can't find such fragment in either storage, we skip this process
+      if (fragment == null) {
+        return;
       }
-
-      let following = wordIndex + 1;
-      while (stateMap.at(following) === currentState) {
-        $(`#word-${following}`).toggleClass('word-selected');
-        ++following;
+      for (let i = wordIndex; i >= fragment.begin; --i) {
+        $(`#word-${i}`).toggleClass('word-selected');
+      }
+      for (let i = wordIndex; i <= fragment.end; ++i) {
+        $(`#word-${i}`).toggleClass('word-selected');
       }
     };
     $('.word').hover(/* Hover */ toggleClasses, /* Unhover */ toggleClasses);
@@ -70,6 +88,20 @@ class Bindings {
   }
 
   /**
+   * @returns {MarkingFragments}
+   */
+  get fragmentsOccupied() {
+    return this.heap.fragmentsOccupied;
+  }
+
+  /**
+   * @returns {MarkingFragments}
+   */
+  get fragmentsFree() {
+    return this.heap.fragmentsFree;
+  }
+
+  /**
    * @returns {number[]}
    */
   get stateMap() {
@@ -78,3 +110,4 @@ class Bindings {
 }
 
 export { Bindings, BINDING_FUNCTIONS };
+
