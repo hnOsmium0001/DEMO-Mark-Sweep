@@ -26,6 +26,14 @@
   pointer-events: none;
 }
 
+.control-panel {
+
+}
+
+.control-group {
+  margin-top: 5px;
+}
+
 .keys {
   /* Inline-block will try to fit to its contents. */
   display: inline-block;

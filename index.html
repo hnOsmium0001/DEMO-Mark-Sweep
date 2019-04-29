@@ -20,8 +20,19 @@
         <canvas id="memory-overlay" class="memory-overlay"></canvas>
     </div>
 
-    <button id="mark">Mark Heap</button>
-    <button id="sweep">Sweep Heap</button>
+    <div id="control-panel">
+        <div class="control-group">
+            <input type="number" id="heap-size" value=64 placeholder="Heap size">
+            <button id="reset">Reset</button>
+        </div>
+        <div class="control-group">
+            <button id="regenerate-objects">Randomize Object</button>
+        </div>
+        <div class="control-group">
+            <button id="mark">Mark Heap</button>
+            <button id="sweep">Sweep Heap</button>
+        </div>
+    </div>
 
     <!-- Make its contents go on a separate line regardless of their style -->
     <div>

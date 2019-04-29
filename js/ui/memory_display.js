@@ -9,12 +9,23 @@ class MemoryDisplay {
    * @param {number} size 
    */
   constructor(size) {
-    this.heap = new Heap(size);
-    this.heap.gc = new MarkSweep(this.heap);
+    this.init(size);
   }
 
-  init() {
-    const sideLength = Math.sqrt(this.heap.size);
+  /**
+   * @param {number} size 
+   */
+  init(size) {
+    this.heap = new Heap(size);
+    this.heap.gc = new MarkSweep(this.heap);
+    this.populateWordElements(0, this.heap.size);
+  }
+
+  /**
+   * @param {number} size 
+   */
+  populateWordElements(size) {
+    const sideLength = Math.sqrt(size);
     if (!Number.isInteger(sideLength)) {
       throw "Unable to display a heap with size that is not a perfect square";
     }
@@ -28,7 +39,7 @@ class MemoryDisplay {
     document.styleSheets[0].addRule('.word-sizing', `width: ${unitSize}px; height: ${unitSize}px;`, 1);
 
     const display = $('#memory-display');
-    for (let i = 0; i < this.heap.size; ++i) {
+    for (let i = 0; i < size; ++i) {
       display.append($(`<div></div>`)
         .prop('id', `word-${i}`)
         .addClass('word')
@@ -37,6 +48,14 @@ class MemoryDisplay {
         // Use .attr() instead of .prop() because our data attribute doesn't exist as a property
         .attr('data-index', i));
     }
+  }
+
+  get size() {
+    return this.heap.size;
+  }
+
+  set size(size) {
+    this.heap.size = size;
   }
 }
 

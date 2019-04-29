@@ -146,7 +146,7 @@ class Heap {
       return Iteration.CONTINUE;
     });
 
-    this.fragmentsFree.addRange(movingTarget, this.endIndex - movingTarget);
+    this.fragmentsFree.addAt(movingTarget, this.endIndex - movingTarget + 1);
   }
 
   /**
