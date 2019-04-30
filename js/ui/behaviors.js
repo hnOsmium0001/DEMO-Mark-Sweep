@@ -76,7 +76,7 @@ const MAX_AMOUNT_OBJECT_REFERENCES = 6;
 const MAX_AMOUNT_ROOTS = 3;
 
 function randomReferences(objects) {
-  const amountToGenerate = random(0, MAX_AMOUNT_OBJECT_REFERENCES);
+  const amountToGenerate = Math.min(random(0, MAX_AMOUNT_OBJECT_REFERENCES), objects.length);
   const selected = new Set();
 
   for(let i = 0; i < amountToGenerate; ++i) {
@@ -98,19 +98,21 @@ function regenerateObjects(heap) {
   // Between 1/2 and 2/3 of the heap
   let amountToFill = random(heap.size * (1 / 2), heap.size * (2 / 3));
   while (amountToFill > 0) {
-    const objectSize = Math.min(amountToFill, random(MIN_OBJECT_SIZE, MAX_OBJECT_SIZE));
+    const objectSize = Math.min(random(MIN_OBJECT_SIZE, MAX_OBJECT_SIZE), amountToFill);
     const references = randomReferences(objects);
     const object = VirtualObject.create(objectSize, references, heap, false);
-    // Unable to allocate enough space for the object
+    // Unable to allocate enough space for the object, which means the heap is almost full
+    // because our limit is far off the filling it to full.
     if (!object) {
-      continue;
+      console.log('Unable to allocare enough space for the object, stopped object generation algorithum')
+      break;
     }
 
     objects.push(object);
     amountToFill -= objectSize;
   }
 
-  const amountRoots = Math.max(objects.length, MAX_AMOUNT_ROOTS);
+  const amountRoots = Math.min(objects.length, MAX_AMOUNT_ROOTS);
   while (heap.root.length < amountRoots) {
     heap.addReference(objects[random(0, objects.length)]);
   }

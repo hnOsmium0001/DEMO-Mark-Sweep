@@ -67,7 +67,7 @@ class Heap {
    * @param {number} ptr 
    */
   addReference(ptr) {
-    if (this.root.includes(ptr)) {
+    if (!this.root.includes(ptr)) {
       this.root.push(ptr);
     }
   }
