@@ -97,5 +97,9 @@ class ObservableArray {
   }
 }
 
+ObservableArray.prototype[Symbol.iterator] = function() {
+  return this.handle[Symbol.iterator];
+};
+
 export { range, ObservableArray };
 

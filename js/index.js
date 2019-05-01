@@ -4,17 +4,7 @@ import { MemoryDisplay } from './ui/memory_display.js';
 $(document).ready(() => {
   const memoryDisplay = new MemoryDisplay(parseInt($('#heap-size').val()));
 
-  // Set the size of overlay canvas based on the size of dispaly element
-  const display = $('#memory-display');
-  const ctx = $('#memory-overlay')[0].getContext('2d');
-  // Use .outerWidth() to include the padding
-  ctx.canvas.width = display.outerWidth() + 'px';
-  ctx.canvas.height = display.outerHeight() + 'px';
-
   new Bindings(memoryDisplay).bindAll();
-
-
-  
 
   // const heap = memoryDisplay.heap;
 

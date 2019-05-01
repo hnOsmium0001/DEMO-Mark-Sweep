@@ -9,6 +9,10 @@ class MemoryDisplay {
    * @param {number} size 
    */
   constructor(size) {
+    // "Declaring" properties
+    this.heap = null;
+    this.unitSize = 0;
+    
     this.init(size);
   }
 
@@ -25,6 +29,7 @@ class MemoryDisplay {
     // Limit the number used for unitSize calculation so that it doesn't go crazyly tiny when heap size is larger
     const shrinkFactor = SIZE_SHRINK_PERIOD / Math.min(this.size, 1024);
     const unitSize = BASE_UNIT_SIZE * shrinkFactor;
+    this.unitSize = unitSize;
 
     // Create a new CSS class to give units width and height
     $('head').append($('<style></style>').html(`.word-sizing { width: ${unitSize}px; height: ${unitSize}px; }`));
@@ -39,6 +44,8 @@ class MemoryDisplay {
         // Use .attr() instead of .prop() because our data attribute doesn't exist as a property
         .attr('data-index', i));
     }
+
+    $('.word').addClass('free');
   }
 
   get size() {

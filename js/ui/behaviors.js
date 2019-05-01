@@ -1,49 +1,35 @@
-import { Iteration } from "../utils.js";
 import { FREE, Heap, MarkingFragments, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, UNKNOWN } from "../memory/heap.js";
 import { regenerateObjects } from '../memory/objects.js';
 import { MemoryDisplay } from "./memory_display.js";
+import { findFragmentCovers, findObjectCovers } from "../utils.js";
+import { ObservableArray } from "../array.js";
 
-/**
- * @param {Fragments} fragments 
- * @param {number} ptr 
- */
-function findFragmentCovers(fragments, ptr) {
-  let result = null;
-  fragments.forEach(fragment => {
-    if (fragment.begin <= ptr && fragment.end >= ptr) {
-      result = fragment;
-      return Iteration.TERMINATE;
-    }
-    return Iteration.CONTINUE;
-  });
-  return result
+function highlightFragment(bindings, element) {
+  element.toggleClass('word-selected');
+
+  const wordIndex = element.data('index');
+  const fragment = findFragmentCovers(bindings.fragmentsOccupied, wordIndex) || findFragmentCovers(bindings.fragmentsFree, wordIndex);
+
+  // If we can't find such fragment in either storage, we skip this process
+  if (fragment == null) {
+    return;
+  }
+  for (let i = wordIndex; i >= fragment.begin; --i) {
+    $(`#word-${i}`).toggleClass('word-selected');
+  }
+  for (let i = wordIndex; i <= fragment.end; ++i) {
+    $(`#word-${i}`).toggleClass('word-selected');
+  }
 }
 
 /**
    * @param {Bindings} bindings 
    */
 function bindUnitHighlighting(bindings) {
-  const stateMap = bindings.stateMap;
-  // Use the keyword function to define it so that 'this' can be bond dynamically by jQuery
-  const toggleClasses = function () {
-    // This is unnecessary since it is already achieved by using word:hover in CSS
-    // $(this).toggleClass('word-selected');
-
-    const wordIndex = $(this).data('index');
-    const fragment = findFragmentCovers(bindings.fragmentsOccupied, wordIndex) || findFragmentCovers(bindings.fragmentsFree, wordIndex);
-
-    // If we can't find such fragment in either storage, we skip this process
-    if (fragment == null) {
-      return;
-    }
-    for (let i = wordIndex; i >= fragment.begin; --i) {
-      $(`#word-${i}`).toggleClass('word-selected');
-    }
-    for (let i = wordIndex; i <= fragment.end; ++i) {
-      $(`#word-${i}`).toggleClass('word-selected');
-    }
+  const toggleClass = function() {
+    highlightFragment(bindings, $(this));
   };
-  $('.word').hover(/* Hover */ toggleClasses, /* Unhover */ toggleClasses);
+  $('.word').hover(/* Hover */ toggleClass, /* Unhover */ toggleClass);
 }
 
 // ---------------------------------------------------------------- //
@@ -69,6 +55,83 @@ function bindUnitColoring(bindings) {
 
 // ---------------------------------------------------------------- //
 
+function getOverlayContext() {
+  // First get the actual DOM element, and then use the HTML way to get ctx
+  return $('#memory-overlay')[0].getContext('2d');
+}
+
+// Length of head, pixels
+const HEAD_LENGTH = 10;
+
+function drawArrow(fromX, fromY, toX, toY) {
+  const ctx = getOverlayContext();
+  const angle = Math.atan2(toY - fromY, toX - fromX);
+  ctx.beginPath();
+  ctx.moveTo(fromX, fromY);
+  ctx.lineTo(toX, toY);
+  ctx.lineTo(toX - HEAD_LENGTH * Math.cos(angle - Math.PI / 6), toY - HEAD_LENGTH * Math.sin(angle - Math.PI / 6));
+  ctx.moveTo(toX, toY);
+  ctx.lineTo(toX - HEAD_LENGTH * Math.cos(angle + Math.PI / 6), toY - HEAD_LENGTH * Math.sin(angle + Math.PI / 6));
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+function middleOf(bindings, position) {
+  const halfUnitSize = bindings.memoryDisplay.unitSize / 2;
+  return {
+    x: position.left + halfUnitSize,
+    y: position.top + halfUnitSize
+  };
+}
+
+/**
+ * @param {Bindings} bindings 
+ */
+function bindUnitLinking(bindings) {
+  const ctx = getOverlayContext();
+  $('.word').hover(function () {
+    const self = $(this);
+    if (self.hasClass('free') || self.hasClass('unknown')) {
+      return;
+    }
+    
+    const currentObject = findObjectCovers(bindings.objects, self.data('index'));
+    const { x, y } = middleOf(bindings, $(`#word-${currentObject.begin}`).position());
+
+    for (const object of currentObject.ref) {
+      const element = $(`#word-${object.begin}`);
+      const { x: targetX, y: targetY } = middleOf(bindings, element.position());
+      highlightFragment(bindings, element);
+      drawArrow(x, y, targetX, targetY);
+    }
+  }, function () {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    const self = $(this);
+    if (self.hasClass('free') || self.hasClass('unknown')) {
+      return;
+    }
+
+    const currentObject = findObjectCovers(bindings.objects, self.data('index'));
+    for (const object of currentObject.ref) {
+      highlightFragment(bindings, $(`#word-${object.begin}`));
+    }
+  });
+}
+
+// ---------------------------------------------------------------- //
+
+function resetCanvasSize() {
+  // Set the size of overlay canvas based on the size of dispaly element
+  const display = $('#memory-display');
+  const ctx = getOverlayContext();
+  // Use .outerWidth() to include the padding
+  ctx.canvas.width = display.outerWidth();
+  ctx.canvas.height = display.outerHeight();
+}
+
+// ---------------------------------------------------------------- //
+
 /**
  * @param {Bindings} bindings 
  */
@@ -77,6 +140,8 @@ function bindButtonClicks(bindings) {
     bindings.memoryDisplay.init(parseInt($('#heap-size').val()));
     bindUnitHighlighting(bindings);
     bindUnitColoring(bindings);
+    bindUnitLinking(bindings);
+    resetCanvasSize(bindings);
   });
 
   $('#regenerate-objects').click(function () {
@@ -102,6 +167,8 @@ function bindButtonClicks(bindings) {
 const BINDING_FUNCTIONS = [
   bindUnitHighlighting,
   bindUnitColoring,
+  bindUnitLinking,
+  resetCanvasSize,
   bindButtonClicks
 ];
 
@@ -143,6 +210,13 @@ class Bindings {
    */
   get stateMap() {
     return this.heap.stateMap;
+  }
+
+  /**
+   * @returns {ObservableArray}
+   */
+  get objects() {
+    return this.heap.objects;
   }
 }
 
