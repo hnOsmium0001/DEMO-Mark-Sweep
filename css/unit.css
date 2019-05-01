@@ -5,7 +5,7 @@
   margin: 0px 4px 4px 0px;
   border-style: solid;
   border-width: 2px;
-  border-color: black;  
+  border-color: black;
 }
 /* When the cursor hovers above an unit, all units who belongs to the current fragment will be highlighted (marked as "word-selected"). */
 .word:hover {
@@ -16,12 +16,15 @@
 .word-selected {
   border-color: yellow;
 }
+.word-referenced {
+  border-color: limegreen;
+}
 
 .unknown {
   background-color: lightgray;
 }
 .occupied-unmarked {
-  background-color: red;
+  background-color: rgb(255, 0, 0, 0.6);
 }
 .occupied-marked-alive {
   background-color: orange;

@@ -4,21 +4,20 @@ import { MemoryDisplay } from "./memory_display.js";
 import { findFragmentCovers, findObjectCovers } from "../utils.js";
 import { ObservableArray } from "../array.js";
 
-function highlightFragment(bindings, element) {
-  element.toggleClass('word-selected');
+function highlightFragment(fragment, element, className) {
+  element.toggleClass(className);
 
   const wordIndex = element.data('index');
-  const fragment = findFragmentCovers(bindings.fragmentsOccupied, wordIndex) || findFragmentCovers(bindings.fragmentsFree, wordIndex);
 
   // If we can't find such fragment in either storage, we skip this process
   if (fragment == null) {
     return;
   }
   for (let i = wordIndex; i >= fragment.begin; --i) {
-    $(`#word-${i}`).toggleClass('word-selected');
+    $(`#word-${i}`).toggleClass(className);
   }
   for (let i = wordIndex; i <= fragment.end; ++i) {
-    $(`#word-${i}`).toggleClass('word-selected');
+    $(`#word-${i}`).toggleClass(className);
   }
 }
 
@@ -27,7 +26,9 @@ function highlightFragment(bindings, element) {
    */
 function bindUnitHighlighting(bindings) {
   const toggleClass = function () {
-    highlightFragment(bindings, $(this));
+    const wordIndex = $(this).data('index');
+    const fragment = findFragmentCovers(bindings.fragmentsOccupied, wordIndex) || findFragmentCovers(bindings.fragmentsFree, wordIndex);
+    highlightFragment(fragment, $(this), 'word-selected');
   };
   $('.word').hover(/* Hover */ toggleClass, /* Unhover */ toggleClass);
 }
@@ -74,6 +75,7 @@ function drawArrow(fromX, fromY, toX, toY) {
   ctx.lineTo(toX - HEAD_LENGTH * Math.cos(angle - Math.PI / 6), toY - HEAD_LENGTH * Math.sin(angle - Math.PI / 6));
   ctx.moveTo(toX, toY);
   ctx.lineTo(toX - HEAD_LENGTH * Math.cos(angle + Math.PI / 6), toY - HEAD_LENGTH * Math.sin(angle + Math.PI / 6));
+  ctx.lineWidth = 2;
   ctx.stroke();
 }
 
@@ -92,6 +94,7 @@ function loopArrow(x, y) {
   ctx.lineTo(x - HEAD_LENGTH * Math.cos(angle - Math.PI / 6), y - HEAD_LENGTH * Math.sin(angle - Math.PI / 6));
   ctx.moveTo(x, y);
   ctx.lineTo(x - HEAD_LENGTH * Math.cos(angle + Math.PI / 6), y - HEAD_LENGTH * Math.sin(angle + Math.PI / 6));
+  ctx.lineWidth = 2;
   ctx.stroke();
 }
 
@@ -124,7 +127,7 @@ function bindUnitLinking(bindings) {
         loopArrow(x, y);
       } else {
         // Don't highlight the object iself again
-        highlightFragment(bindings, element);
+        highlightFragment(bindings.fragmentsOccupied.getBeginsAt(object.begin), element, 'word-referenced');
         drawArrow(x, y, targetX, targetY);
       }
     }
@@ -140,7 +143,7 @@ function bindUnitLinking(bindings) {
       if (object === currentObject) {
         continue;
       }
-      highlightFragment(bindings, $(`#word-${object.begin}`));
+      highlightFragment(bindings.fragmentsOccupied.getBeginsAt(object.begin), $(`#word-${object.begin}`), 'word-referenced');
     }
   });
 }
@@ -160,7 +163,6 @@ function resetOverlayProperties() {
   const canvas = ctx.canvas;
 
   resizeOverlay(canvas);
-  ctx.lineWidth = 2;
 }
 
 // ---------------------------------------------------------------- //
