@@ -90,14 +90,12 @@ function middleOf(bindings, position) {
 function bindUnitLinking(bindings) {
   const ctx = getOverlayContext();
   $('.word').hover(function () {
-    const self = $(this);
-    if (self.hasClass('free') || self.hasClass('unknown')) {
+    const currentObject = findObjectCovers(bindings.objects, $(this).data('index'));
+    if (currentObject === null) {
       return;
     }
-    
-    const currentObject = findObjectCovers(bindings.objects, self.data('index'));
-    const { x, y } = middleOf(bindings, $(`#word-${currentObject.begin}`).position());
 
+    const { x, y } = middleOf(bindings, $(`#word-${currentObject.begin}`).position());
     for (const object of currentObject.ref) {
       const element = $(`#word-${object.begin}`);
       const { x: targetX, y: targetY } = middleOf(bindings, element.position());
@@ -107,12 +105,10 @@ function bindUnitLinking(bindings) {
   }, function () {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    const self = $(this);
-    if (self.hasClass('free') || self.hasClass('unknown')) {
-      return;
+    const currentObject = findObjectCovers(bindings.objects, $(this).data('index'));
+    if (currentObject === null) {
+      return
     }
-
-    const currentObject = findObjectCovers(bindings.objects, self.data('index'));
     for (const object of currentObject.ref) {
       highlightFragment(bindings, $(`#word-${object.begin}`));
     }
