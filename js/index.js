@@ -8,8 +8,8 @@ $(document).ready(() => {
   const display = $('#memory-display');
   const ctx = $('#memory-overlay')[0].getContext('2d');
   // Use .outerWidth() to include the padding
-  ctx.canvas.width = display.outerWidth();
-  ctx.canvas.width = display.outerHeight();
+  ctx.canvas.width = display.outerWidth() + 'px';
+  ctx.canvas.height = display.outerHeight() + 'px';
 
   new Bindings(memoryDisplay).bindAll();
 
