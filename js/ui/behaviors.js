@@ -26,7 +26,7 @@ function highlightFragment(bindings, element) {
    * @param {Bindings} bindings 
    */
 function bindUnitHighlighting(bindings) {
-  const toggleClass = function() {
+  const toggleClass = function () {
     highlightFragment(bindings, $(this));
   };
   $('.word').hover(/* Hover */ toggleClass, /* Unhover */ toggleClass);
@@ -67,12 +67,31 @@ function drawArrow(fromX, fromY, toX, toY) {
   const ctx = getOverlayContext();
   const angle = Math.atan2(toY - fromY, toX - fromX);
   ctx.beginPath();
+  // Arrow body
   ctx.moveTo(fromX, fromY);
   ctx.lineTo(toX, toY);
+  // Arrow head
   ctx.lineTo(toX - HEAD_LENGTH * Math.cos(angle - Math.PI / 6), toY - HEAD_LENGTH * Math.sin(angle - Math.PI / 6));
   ctx.moveTo(toX, toY);
   ctx.lineTo(toX - HEAD_LENGTH * Math.cos(angle + Math.PI / 6), toY - HEAD_LENGTH * Math.sin(angle + Math.PI / 6));
-  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+const RADIUS = 16;
+
+function loopArrow(x, y) {
+  const ctx = getOverlayContext();
+  // Arrow always face down (0, 0) -> (0, 1) : atan2(1 - 0, 0 - 0)
+  const angle = Math.atan2(1, 0);
+  ctx.beginPath();
+  // Set the arrow body left the the center
+  // Arrow body
+  ctx.arc(x - RADIUS, y, RADIUS, 0, 2 * Math.PI);
+  // Arrow head
+  ctx.moveTo(x, y);
+  ctx.lineTo(x - HEAD_LENGTH * Math.cos(angle - Math.PI / 6), y - HEAD_LENGTH * Math.sin(angle - Math.PI / 6));
+  ctx.moveTo(x, y);
+  ctx.lineTo(x - HEAD_LENGTH * Math.cos(angle + Math.PI / 6), y - HEAD_LENGTH * Math.sin(angle + Math.PI / 6));
   ctx.stroke();
 }
 
@@ -99,17 +118,28 @@ function bindUnitLinking(bindings) {
     for (const object of currentObject.ref) {
       const element = $(`#word-${object.begin}`);
       const { x: targetX, y: targetY } = middleOf(bindings, element.position());
-      highlightFragment(bindings, element);
-      drawArrow(x, y, targetX, targetY);
+
+      // Reference to the object itself
+      if (object === currentObject) {
+        loopArrow(x, y);
+      } else {
+        // Don't highlight the object iself again
+        highlightFragment(bindings, element);
+        drawArrow(x, y, targetX, targetY);
+      }
     }
   }, function () {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     const currentObject = findObjectCovers(bindings.objects, $(this).data('index'));
     if (currentObject === null) {
-      return
+      return;
     }
     for (const object of currentObject.ref) {
+      // Don't highlight the object iself again
+      if (object === currentObject) {
+        continue;
+      }
       highlightFragment(bindings, $(`#word-${object.begin}`));
     }
   });
@@ -117,13 +147,20 @@ function bindUnitLinking(bindings) {
 
 // ---------------------------------------------------------------- //
 
-function resetCanvasSize() {
+function resizeOverlay(canvas) {
   // Set the size of overlay canvas based on the size of dispaly element
   const display = $('#memory-display');
-  const ctx = getOverlayContext();
   // Use .outerWidth() to include the padding
-  ctx.canvas.width = display.outerWidth();
-  ctx.canvas.height = display.outerHeight();
+  canvas.width = display.outerWidth();
+  canvas.height = display.outerHeight();
+}
+
+function resetOverlayProperties() {
+  const ctx = getOverlayContext();
+  const canvas = ctx.canvas;
+
+  resizeOverlay(canvas);
+  ctx.lineWidth = 2;
 }
 
 // ---------------------------------------------------------------- //
@@ -132,25 +169,36 @@ function resetCanvasSize() {
  * @param {Bindings} bindings 
  */
 function bindButtonClicks(bindings) {
-  $('#reset').click(function () {
+  $('#reset').click(() => {
     bindings.memoryDisplay.init(parseInt($('#heap-size').val()));
     bindUnitHighlighting(bindings);
     bindUnitColoring(bindings);
     bindUnitLinking(bindings);
-    resetCanvasSize(bindings);
+    resetOverlayProperties(bindings);
   });
 
-  $('#regenerate-objects').click(function () {
+  $('#regenerate-objects').click(() => {
     regenerateObjects(bindings.heap);
   });
 
-  $('#mark').click(function () {
+  $('#mark').click(() => {
     bindings.heap.gc.mark();
   });
-  $('#sweep').click(function () {
+  $('#sweep').click(() => {
     bindings.heap.gc.sweep();
     bindings.heap.gc.updateObjectContainer();
   });
+}
+
+// ---------------------------------------------------------------- //
+
+/**
+ * @param {Bindings} bindings 
+ */
+function bindOtherEvents(bindings) {
+  $(window).resize(() => {
+    resizeOverlay($('#memory-overlay')[0]);
+  })
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -164,8 +212,9 @@ const BINDING_FUNCTIONS = [
   bindUnitHighlighting,
   bindUnitColoring,
   bindUnitLinking,
-  resetCanvasSize,
-  bindButtonClicks
+  resetOverlayProperties,
+  bindButtonClicks,
+  bindOtherEvents
 ];
 
 class Bindings {
