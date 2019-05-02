@@ -83,8 +83,9 @@ const RADIUS = 16;
 
 function loopArrow(x, y) {
   const ctx = getOverlayContext();
-  // Arrow always face down (0, 0) -> (0, 1) : atan2(1 - 0, 0 - 0)
-  const angle = Math.atan2(1, 0);
+  // Arrow always face down (0, 0) -> (0.3, 1) : atan2(1 - 0, 0.3 - 0)
+  // Magic number just made it look nice
+  const angle = Math.atan2(1, 0.3);
   ctx.beginPath();
   // Set the arrow body left the the center
   // Arrow body
