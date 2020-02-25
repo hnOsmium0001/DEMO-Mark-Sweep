@@ -1,4 +1,3 @@
-# DEMO-Mark-Sweep
+# DEMO-Mark-Sweep-TS
 
-Demo of a Mark & Sweep GC algorithum written in JavaScript, along with a display of the heap.
-[Link](https://hnosmium0001.github.io/DEMO-Mark-Sweep/) to Github Pages
+Demo of a Mark & Sweep GC algorithum written in JavaScript, along with a display of the heap. Rewriteen in TypeScript and as a npm package.

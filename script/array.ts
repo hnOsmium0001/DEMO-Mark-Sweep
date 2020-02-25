@@ -5,16 +5,15 @@
  * @param {number} end Exclusive,  it -1 is end of the sequence.
  * @returns {number[]} An arithmetic sequence.
  */
-function range(start = 0, end) {
+export function range(start: number = 0, end: number): number[] {
   return Array.from(new Array(end - start), (v, i) => i + start);
 }
 
-class ObservableArray {
-  /**
-   * @param {number} [size = 0] 
-   * @param {any} [value = undefined]
-   */
-  constructor(size = 0, value = undefined) {
+export class ObservableArray<T> implements Iterable<T> {
+  public handle: Array<T>;
+  public subscribers: { (updatedIndices: number[]): void }[];
+
+  constructor(size = 0, value: T = undefined) {
     this.handle = new Array(size).fill(value);
     this.subscribers = [];
   }
@@ -24,15 +23,11 @@ class ObservableArray {
    * 
    * @param {(updatedIndices: number[]) => void} subscriber 
    */
-  subscribe(subscriber) {
+  public subscribe(subscriber: (updatedIndices: number[]) => void): void {
     this.subscribers.push(subscriber);
   }
 
-  /**
-   * @param {number[]} updatedIndices 
-   * @private
-   */
-  fire(updatedIndices) {
+  private fire(updatedIndices: number[]): void {
     for (const subscriber of this.subscribers) {
       subscriber(updatedIndices);
     }
@@ -41,22 +36,22 @@ class ObservableArray {
   /**
    * Fires event.
    *  
-   * @param {any} value 
+   * @param {T} value 
    * @param {number} [start = 0] 
    * @param {number} [end = this.length]
    */
-  fill(value, start = 0, end = this.length) {
+  public fill(value: T, start: number = 0, end: number = this.length): ObservableArray<T> {
     this.handle.fill(value, start, end);
     this.fire(range(start, end));
     return this;
   }
 
-  includes(value) {
+  public includes(value: T) {
     return this.handle.includes(value);
   }
 
-  map(callback) {
-    const observableArray = new ObservableArray(this.length);
+  public map(callback: (value: T, index: number, array: T[]) => T): ObservableArray<T> {
+    const observableArray = new ObservableArray<T>(this.length);
     observableArray.handle = this.handle.map(callback)
     return observableArray;
   }
@@ -64,7 +59,7 @@ class ObservableArray {
   /**
    * Fires event.
    */
-  mapInplace(callback) {
+  public mapInplace(callback: (arg0: T, arg1: number) => T): ObservableArray<T> {
     for (let i = 0; i < this.length; ++i) {
       this.handle[i] = callback(this.handle[i], i);
     }
@@ -72,18 +67,18 @@ class ObservableArray {
     return this;
   }
 
-  clear() {
+  public clear(): void {
     this.length = 0;
   }
 
-  at(i) {
+  public at(i: number): T {
     return this.handle[i];
   }
 
   /**
    * Fires event.
    */
-  put(i, value) {
+  public put(i: number, value: T): void {
     this.handle[i] = value;
     this.fire([i]);
   }
@@ -95,7 +90,8 @@ class ObservableArray {
   set length(length) {
     this.handle.length = length;
   }
+
+  public [Symbol.iterator](): Iterator<T, any, undefined> {
+    return this.handle[Symbol.iterator]();
+  }
 }
-
-export { range, ObservableArray };
-

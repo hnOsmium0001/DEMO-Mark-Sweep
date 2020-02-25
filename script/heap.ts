@@ -1,55 +1,58 @@
-import { ObservableArray } from '../array.js';
-import { Iteration } from '../utils.js';
-import { Fragment, Fragments } from './fragment.js';
+import { ObservableArray } from './array';
+import { Iteration } from './utils';
+import { Fragment, Fragments } from './fragment';
+import { MarkSweep } from './gc';
+import { VirtualObject } from './objects';
 
 /** Unit in unknown state, created when the unit is being removed. */
-const UNKNOWN = 0;
+export const UNKNOWN = 0;
 /** Free unit */
-const FREE = 1;
+export const FREE = 1;
 /** Occupied, unmarked unit. */
-const OCCUPIED = 2;
+export const OCCUPIED = 2;
 /** Occupied, marked unit and is safe from sweep. */
-const OCCUPIED_ALIVE = 3;
+export const OCCUPIED_ALIVE = 3;
 /** Occupied, marked unit but need to be sweeped. */
-const OCCUPIED_DEAD = 4;
+export const OCCUPIED_DEAD = 4;
 
-class MarkingFragments extends Fragments {
-  /**
-   * @param {Heap} heap 
-   * @param {number} stateOnAdd 
-   */
-  constructor(heap, stateOnAdd) {
+export class MarkingFragments extends Fragments {
+  public heap: Heap;
+  public stateOnAdd: number;
+
+  constructor(heap: Heap, stateOnAdd: number) {
     super(heap.size);
     this.heap = heap;
     this.stateOnAdd = stateOnAdd;
   }
 
-  remove(fragment) {
+  public remove(fragment: Fragment): boolean {
     this.heap.stateMap.fill(UNKNOWN, fragment.begin, fragment.end + 1);
-    super.remove(fragment);
+    return super.remove(fragment);
   }
 
-  insertFragmentAt(fragment, i) {
+  public insertFragmentAt(fragment: Fragment, i: number): boolean {
     this.heap.stateMap.fill(this.stateOnAdd, fragment.begin, fragment.end + 1);
-    super.insertFragmentAt(fragment, i);
+    return super.insertFragmentAt(fragment, i);
   }
 
-  /**
-   * @param {boolean} [wipeStateMap = true] 
-   */
-  clear(wipeStateMap = true) {
+  public clear(wipeStateMap: boolean = true): void {
     if (wipeStateMap) {
-      this.heap.stateMap.mapInplace(state => state === this.stateOnAdd ? UNKNOWN : state);
+      this.heap.stateMap.mapInplace((state: number) => state === this.stateOnAdd ? UNKNOWN : state);
     }
     super.clear();
   }
 }
 
-class Heap {
-  /**
-   * @param {number} size Number of words
-   */
-  constructor(size) {
+export class Heap {
+  public size: number;
+  public fragmentsFree: MarkingFragments;
+  public fragmentsOccupied: MarkingFragments;
+  public stateMap: ObservableArray<number>;
+  private _gc: MarkSweep;
+  public objects: VirtualObject[];
+  public root: VirtualObject[];
+
+  constructor(size: number) {
     this.size = size;
     this.fragmentsFree = new MarkingFragments(this, FREE);
     this.fragmentsOccupied = new MarkingFragments(this, OCCUPIED);
@@ -63,16 +66,13 @@ class Heap {
     this.fragmentsFree.addRange(0, this.endIndex);
   }
   
-  /**
-   * @param {number} ptr 
-   */
-  addReference(ptr) {
+  public addReference(ptr: VirtualObject): void {
     if (!this.root.includes(ptr)) {
       this.root.push(ptr);
     }
   }
 
-  clearReferences() {
+  public clearReferences(): void {
     this.root = [];
   }
 
@@ -82,7 +82,7 @@ class Heap {
    * @param {number} size 
    * @returns {number} Start of a fragment that fits an object that is given size. If allocation failed, it will return {@constant -1}.
    */
-  allocatePure(size) {
+  public allocatePure(size: number): number {
     let result = -1;
 
     this.fragmentsFree.forEach(fragment => {
@@ -110,7 +110,7 @@ class Heap {
    * @see #allocatePure(number)
    * @see #sortFragments()
    */
-  allocate(size) {
+  public allocate(size: any): number {
     const result = this.allocatePure(size);
     if (result === -1) {
       this.sortFragments();
@@ -122,13 +122,13 @@ class Heap {
   /**
    * @param {number} ptr Start of a fragment, in {@code this.fragmentsFree}.
    */
-  free(ptr) {
+  public free(ptr: number): void {
     const fragment = this.fragmentsOccupied.getBeginsAt(ptr);
     this.fragmentsOccupied.remove(fragment);
     this.fragmentsFree.add(fragment);
   }
 
-  sortFragments() {
+  public sortFragments(): void {
     this.fragmentsFree.clear();
 
     let movingTarget = 0;
@@ -143,24 +143,15 @@ class Heap {
     this.fragmentsFree.addAt(movingTarget, this.endIndex - movingTarget + 1);
   }
 
-  /**
-   * @returns {number}
-   */
-  get endIndex() {
+  get endIndex(): number {
     return this.size - 1;
   }
 
-  /**
-   * @returns {number}
-   */
-  get gc() {
+  get gc(): MarkSweep {
     return this._gc;
   }
 
-  /**
-   * @param {{ collect: function; }} gc
-   */
-  set gc(gc) {
+  set gc(gc: MarkSweep) {
     if (typeof gc.collect === 'function') {
       this._gc = gc;
     } else {
@@ -168,6 +159,3 @@ class Heap {
     }
   }
 }
-
-export { UNKNOWN, FREE, OCCUPIED, OCCUPIED_ALIVE, OCCUPIED_DEAD, MarkingFragments, Heap };
-

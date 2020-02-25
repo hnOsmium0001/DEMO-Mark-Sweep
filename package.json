@@ -1,0 +1,32 @@
+{
+  "name": "mark-sweep-ts",
+  "version": "1.0.0",
+  "description": "A example of a mark-sweep GC implemented in JS (https://github.com/hnOsmium0001/DEMO-Mark-Sweep), rewritten in TypeScript",
+  "main": "script/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hnOsmium0001/DEMO-Mark-Sweep-TS.git"
+  },
+  "author": "hnOsmium0001",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hnOsmium0001/DEMO-Mark-Sweep-TS/issues"
+  },
+  "homepage": "https://github.com/hnOsmium0001/DEMO-Mark-Sweep-TS#readme",
+  "devDependencies": {
+    "@types/jquery": "^3.3.31",
+    "css-loader": "^3.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^6.0.4",
+    "typescript": "^3.5.3",
+    "webpack": "^4.35.3",
+    "webpack-cli": "^3.3.5"
+  },
+  "dependencies": {
+    "jquery": "^3.4.1"
+  }
+}

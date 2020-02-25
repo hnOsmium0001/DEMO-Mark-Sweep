@@ -1,37 +1,25 @@
-import { Iteration } from "../utils.js";
+import { Iteration } from './utils';
 
-class Fragment {
-  /**
-   * @param {number} begin 
-   * @param {number} size 
-   */
-  constructor(begin, size) {
+export class Fragment {
+  private _begin: number;
+  private _size: number;
+  private _end: number;
+
+  constructor(begin: number, size: number) {
     this._begin = begin;
     this._size = size;
     this._end = begin + size - 1;
   }
 
-  /**
-   * @param {Fragment} other 
-   * @returns {boolean}
-   */
-  isBefore(other) {
+  public isBefore(other: Fragment): boolean {
     return this._begin - 1 == other._end;
   }
 
-  /**
-   * @param {Fragment} other 
-   * @returns {boolean}
-   */
-  isAfter(other) {
+  public isAfter(other: Fragment): boolean {
     return this._end + 1 == other._begin;
   }
 
-  /**
-   * @param {Fragment} other 
-   * @returns {boolean}
-   */
-  isNeighborWith(other) {
+  public isNeighborWith(other: Fragment): boolean {
     return this.isBefore(other) || this.isAfter(other);
   }
 
@@ -40,8 +28,8 @@ class Fragment {
    * @returns {Fragment} Always {@code this}.
    * @throws {Error} When this fragment and the other fragment is not neighbors.
    */
-  merge(other) {
-    if (this.isBefore(_other)) {
+  public merge(other: Fragment): Fragment {
+    if (this.isBefore(other)) {
       this.expandCapacity(other._size);
       this._end = other._end;
     } else if (this.isAfter(other)) {
@@ -54,67 +42,43 @@ class Fragment {
     return this;
   }
 
-  /**
-   * @param {number} increase 
-   * @private
-   */
-  expandCapacity(increase) {
+  private expandCapacity(increase: number): void {
     this._size += increase;
   }
 
-  /**
-   * @returns {number}
-   */
   get begin() {
     return this._begin;
   }
 
-  /**
-   * @param {number} begin
-   */
   set begin(begin) {
     this._begin = begin;
     this._end = begin + this._size;
   }
 
-  /**
-   * @returns {number}
-   */
   get end() {
     return this._end;
   }
 
-  /**
-   * @param {number} end
-   */
   set end(end) {
     this._end = end;
     this._size = end - this._begin + 1;
   }
 
-  /**
-   * @returns {number}
-   */
   get size() {
     return this._size;
   }
 
-  /**
-   * @param {number} size
-   */
   set size(size) {
     this._size = size;
     this._end = this._begin + this._size - 1;
   }
 }
 
-/**
- * @param {Fragments} fragments 
- * @param {(this: Fragment[], current: Fragment, next: Fragment) => boolean} predicate 
- * @returns {number}
- */
-function findIndex(fragments, predicate) {
-  if (predicate(fragments.fragmentBefore0, fragments.firstFragment)) {
+function findIndex(
+  fragments: Fragments,
+  predicate: (this: Fragment[], current: Fragment, next: Fragment) => boolean
+): number {
+  if (predicate.call(fragments.storage, fragments.fragmentBefore0, fragments.firstFragment)) {
     // If the new fragment fits before the first stored fragment, put it at i=0
     return 0;
   }
@@ -127,13 +91,13 @@ function findIndex(fragments, predicate) {
     const current = array[i];
     // Since we will stop at 'length - 2' (second to last element), this is safe
     const next = array[i + 1];
-    if(predicate(current, next)) {
+    if(predicate.call(fragments.storage, current, next)) {
       // If the new fragment fits between the 2 fragments, put it at the second fragment
       return i + 1;
     }
   }
 
-  if (predicate(fragments.lastFragment, fragments.fragmentAfterEnd)) {
+  if (predicate.call(fragments.storage, fragments.lastFragment, fragments.fragmentAfterEnd)) {
     // If the new fragment fits after all stored fragments, put it at end of the array (as 'array.push(fragment)')
     return array.length;
   }
@@ -145,21 +109,21 @@ function findIndex(fragments, predicate) {
 const _fragmentBefore0 = new Fragment(-1, 0);
 
 // TODO use a better way to store fragments
-class Fragments {
+export class Fragments {
+  public storage: Fragment[];
+  public fragmentBefore0: Fragment;
+  public fragmentAfterEnd: Fragment;
+
   /**
   * @param {number} size Number of words, should be the same as the heap it belongs to if it has one.
   */
-  constructor(size) {
+  constructor(size: number) {
     this.storage = [];
     this.fragmentBefore0 = _fragmentBefore0;
     this.fragmentAfterEnd = new Fragment(size, 0);
   }
 
-  /**
-   * @param {Fragment} fragment 
-   * @returns {boolean}
-   */
-  remove(fragment) {
+  public remove(fragment: Fragment): boolean {
     const targetIndex = this.storage.indexOf(fragment);
     if (targetIndex != -1) {
       // Delete the fragment at 'targetIndex'
@@ -169,13 +133,7 @@ class Fragments {
     return false;
   }
 
-  /**
-   * @param {Fragment} fragment 
-   * @param {number} i 
-   * @returns {boolean}
-   * @private
-   */
-  insertFragmentAt(fragment, i) {
+  protected insertFragmentAt(fragment: Fragment, i: number): boolean {
     if (i != -1) {
       const previous = this.getInternal(i - 1);
       if (fragment.isAfter(previous)) {
@@ -196,58 +154,36 @@ class Fragments {
     return false;
   }
 
-  /**
-   * @param {Fragment} fragment 
-   * @returns {boolean}
-   */
-  add(fragment) {
+  public add(fragment: Fragment): boolean {
     const insertion = findIndex(this,
       (current, next) => current.end < fragment.begin && next.begin > fragment.end);
     return this.insertFragmentAt(fragment, insertion);
   }
 
-  /**
-   * @param {number} begin 
-   * @param {number} size 
-   * @returns {boolean}
-   */
-  addAt(begin, size) {
+  public addAt(begin: number, size: number): boolean {
     if (size === 0) {
       return;
     }
     return this.addRangeInternal(begin, size, begin + size - 1);
   }
 
-  /**
-   * @param {number} begin 
-   * @param {number} size 
-   * @returns {boolean}
-   */
-  addRange(begin, end) {
+  public addRange(begin: number, end: number): boolean {
     return this.addRangeInternal(begin, end - begin + 1, end);
   }
 
-  /**
-   * @param {number} begin 
-   * @param {number} size
-   * @param {number} end
-   * @returns {boolean}
-   * @private
-   */
-  addRangeInternal(begin, size, end) {
+  private addRangeInternal(begin: number, size: number, end: number): boolean {
     const insertion = findIndex(this,
       (current, next) => current.end < begin && next.begin > end);
     return this.insertFragmentAt(new Fragment(begin, size), insertion);
   }
 
-  clear() {
+  public clear(): void {
     this.storage.length = 0;
   }
 
-  /**
-   * @param {(fragment: Fragment) => void} lambda 
-   */
-  forEach(lambda) {
+  public forEach(
+    lambda: (fragment: Fragment) => number
+  ): void {
     for (const fragment of this.storage) {
       const signal = lambda(fragment);
       switch (signal) {
@@ -262,15 +198,11 @@ class Fragments {
    * @param {number} ptr 
    * @returns {Fragment, undefined} 'undefined' when no such fragment is found
    */
-  getBeginsAt(ptr) {
+  public getBeginsAt(ptr: number): Fragment {
     return this.storage.find(fragment => fragment.begin == ptr);
   }
 
-  /**
-   * @param {number} i
-   * @private
-   */
-  getInternal(i) {
+  private getInternal(i: number): Fragment {
     if (i < 0) {
       return this.fragmentBefore0;
     }
@@ -280,22 +212,13 @@ class Fragments {
     return this.storage[i];
   }
 
-  /**
-   * @returns {Fragment}
-   */
   get firstFragment() {
     // First element, 'fragmentAfterEnd' when 'storage' is empty
     return this.getInternal(0);
   }
 
-  /**
-   * @returns {Fragment}
-   */
   get lastFragment() {
     // Last element, 'fragmentBefore0' when 'storage' is empty
     return this.getInternal(this.storage.length - 1);
   }
 }
-
-export { Fragment, Fragments };
-
